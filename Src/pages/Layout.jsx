@@ -74,13 +74,6 @@ function NavItem({ item, isActive }) {
 function OldBackground() {
   return (
     <div className="fixed inset-0 bg-gradient-to-br from-teal-600 via-blue-700 via-purple-800 to-pink-900">
-      <div
-        className="absolute inset-0 opacity-20"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-          backgroundSize: "256px 256px"
-        }}
-      />
       <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/30 via-transparent to-magenta-500/30" />
       <div className="absolute inset-0 bg-gradient-to-bl from-lime-400/20 via-transparent to-orchid-500/20" />
       <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-black/40" />

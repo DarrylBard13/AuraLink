@@ -56,11 +56,6 @@ function SubscriptionsPageContent() {
     fetchUser();
     loadSubscriptions();
 
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('add') === 'true') {
-      setEditingSubscription(null);
-      setShowForm(true);
-    }
   }, [loadSubscriptions]);
 
   // <Event Handlers>

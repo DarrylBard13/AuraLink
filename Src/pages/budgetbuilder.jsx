@@ -37,9 +37,8 @@ function BudgetBuilderPageContent() {
     const initConversation = async () => {
       setIsLoading(true);
       try {
-        const urlParams = new URLSearchParams(window.location.search);
-        const urlConversationId = urlParams.get('conversation_id');
-        const prefillPrompt = urlParams.get('prefill_prompt');
+        const urlConversationId = null;
+        const prefillPrompt = null;
         
         let conversationId = urlConversationId || localStorage.getItem(CONVERSATION_ID_KEY);
         let conv = null;
@@ -57,12 +56,6 @@ function BudgetBuilderPageContent() {
             console.log("Failed to load existing conversation, creating new one");
             // If conversation doesn't exist anymore, remove the stored ID
             localStorage.removeItem(CONVERSATION_ID_KEY);
-            // Also remove from URL to prevent loops on refresh
-            if (urlConversationId) {
-                const newUrl = new URL(window.location);
-                newUrl.searchParams.delete('conversation_id');
-                window.history.replaceState({}, '', newUrl);
-            }
             conv = null;
           }
         }
@@ -94,15 +87,6 @@ function BudgetBuilderPageContent() {
           setMessages([welcomeMessage]);
         }
 
-        // Check for a pre-filled prompt from the URL instead of auto-sending
-        if (prefillPrompt) {
-            setInputMessage(decodeURIComponent(prefillPrompt));
-
-            // Clean the URL to prevent re-triggering on refresh
-            const newUrl = new URL(window.location);
-            newUrl.searchParams.delete('prefill_prompt');
-            window.history.replaceState({}, '', newUrl.toString());
-        }
         
         setIsLoading(false);
 

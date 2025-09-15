@@ -59,19 +59,6 @@ function BillsPageContent() {
     };
     fetchUser();
 
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('add') === 'true') {
-      setEditingBill(null);
-      setShowForm(true);
-    }
-
-    const statusFromUrl = urlParams.get('status');
-    if (statusFromUrl) {
-      const validStatuses = ["unpaid", "all", "pending", "paid", "overdue"];
-      if (validStatuses.includes(statusFromUrl)) {
-        setStatusFilter(statusFromUrl);
-      }
-    }
   }, []);
 
   // Data Loading
@@ -175,9 +162,6 @@ function BillsPageContent() {
   const handleCancel = () => {
     setShowForm(false);
     setEditingBill(null);
-    const url = new URL(window.location);
-    url.searchParams.delete('add');
-    window.history.pushState({}, '', url);
   };
 
   const handleAddTransaction = (bill) => {

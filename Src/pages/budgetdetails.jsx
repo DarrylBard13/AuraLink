@@ -70,8 +70,7 @@ function BudgetDetailsPageContent() {
   useEffect(() => {
     const fetchBudget = async () => {
       try {
-        const params = new URLSearchParams(window.location.search);
-        const budgetCycle = params.get("cycle");
+        const budgetCycle = null;
         if (!budgetCycle) {
           setError("No budget cycle provided.");
           setLoading(false);
