@@ -357,46 +357,6 @@ function AssistantPageContent() {
 }
 
 export default function AssistantPage() {
-  const [userRole, setUserRole] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchUserRole = async () => {
-      try {
-        const currentUser = await User.me();
-        setUserRole(currentUser.role || 'user');
-      } catch (error) {
-        console.error("Error fetching user role:", error);
-        setUserRole('user'); // Default to 'user' on error
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUserRole();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="p-8 text-center text-white h-full flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin" />
-      </div>
-    );
-  }
-
-  if (userRole !== 'admin') {
-    return (
-      <div className="p-8 text-center text-white h-full flex flex-col items-center justify-center">
-        <div className="glass-panel p-8 rounded-2xl max-w-md w-full">
-          <div className="mx-auto w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mb-4">
-            <ShieldBan className="w-8 h-8 text-red-300" />
-          </div>
-          <h2 className="text-2xl font-bold text-white mb-2">Access Denied</h2>
-          <p className="text-white/70">You do not have permission to view the AI Assistant. This feature is for administrators only.</p>
-        </div>
-      </div>
-    );
-  }
 
   return <AssistantPageContent />;
 }

@@ -28,7 +28,6 @@ function SubscriptionsPageContent() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterTab, setFilterTab] = useState("all");
   const [loading, setLoading] = useState(true);
-  const [userRole, setUserRole] = useState("user");
   const [detailsSubscription, setDetailsSubscription] = useState(null);
 
   // <Data Loading & Lifecycle>
@@ -47,10 +46,8 @@ function SubscriptionsPageContent() {
     const fetchUser = async () => {
       try {
         const currentUser = await User.me();
-        setUserRole(currentUser.role || 'user');
       } catch (e) {
         console.error("Failed to fetch user", e);
-        setUserRole('user');
       }
     };
     fetchUser();
@@ -163,7 +160,7 @@ function SubscriptionsPageContent() {
 
   const filteredSubscriptions = getFilteredSubscriptions();
   const unpaidVisible = filteredSubscriptions.filter((sub) => !sub.paidThisCycle);
-  const isAdmin = userRole === 'admin';
+  const isAdmin = true;
 
   const activeSubs = subscriptions.filter((s) => s.status === 'active');
   const unpaidActiveSubs = activeSubs.filter((s) => !s.paidThisCycle);

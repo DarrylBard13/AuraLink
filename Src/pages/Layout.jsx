@@ -100,15 +100,15 @@ function ThemeToggle({ isDark, onToggle }) {
 
 function SideNavigation() {
   const location = useLocation();
-  const [userRole, setUserRole] = React.useState("user");
+  const [userRole, setUserRole] = React.useState("admin");
 
   React.useEffect(() => {
     const fetchUser = async () => {
       try {
         const currentUser = await User.me();
-        setUserRole(currentUser.role || "user");
+        setUserRole("admin");
       } catch (error) {
-        console.error("Error fetching user role:", error);
+        console.error("Error fetching user role:", error); setUserRole("admin");
       }
     };
     fetchUser();
@@ -176,7 +176,7 @@ export default function Layout({ children, currentPageName }) {
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
   const [headerExpanded, setHeaderExpanded] = React.useState(false);
   const [userName, setUserName] = React.useState("");
-  const [userRole, setUserRole] = React.useState("user");
+  const [userRole, setUserRole] = React.useState("admin");
   const location = useLocation();
 
   // Theme
@@ -234,7 +234,7 @@ export default function Layout({ children, currentPageName }) {
         const currentUser = await User.me();
         const displayName = currentUser.preferred_name || (currentUser.full_name?.split(" ")[0]) || "";
         setUserName(displayName);
-        setUserRole(currentUser.role || "user");
+        setUserRole("admin");
       } catch (error) {
         console.error("Error fetching user:", error);
       }

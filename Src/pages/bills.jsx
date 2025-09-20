@@ -44,7 +44,6 @@ function BillsPageContent() {
   const [detailsBill, setDetailsBill] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [userRole, setUserRole] = useState("user");
   const [selectedCycle, setSelectedCycle] = useState(format(new Date(), 'yyyy-MM'));
 
   // User and URL Parameter Setup
@@ -52,7 +51,6 @@ function BillsPageContent() {
     const fetchUser = async () => {
       try {
         const currentUser = await User.me();
-        setUserRole(currentUser.role || 'user');
       } catch (e) {
         console.error("Failed to fetch user", e);
       }
@@ -383,7 +381,7 @@ function BillsPageContent() {
   };
 
   const filteredBills = getFilteredAndSortedBills();
-  const isAdmin = userRole === 'admin';
+  const isAdmin = true;
 
   const overdueBills = filteredBills.filter((bill) => bill.status === "overdue");
   const upcomingBills = filteredBills.filter((bill) => bill.status === "pending");

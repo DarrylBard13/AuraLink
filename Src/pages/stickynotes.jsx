@@ -13,7 +13,6 @@ import { cn } from '@/lib/utils';
 function StickyNotesContent() {
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [userRole, setUserRole] = useState('user');
   const [editingNote, setEditingNote] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isLayoutEditing, setIsLayoutEditing] = useState(false);
@@ -135,21 +134,15 @@ function StickyNotesContent() {
   }, [notes]); // Re-create if 'notes' changes
 
   useEffect(() => {
-    const fetchUserAndNotes = async () => {
+    const fetchNotes = async () => {
       try {
-        const currentUser = await User.me();
-        setUserRole(currentUser.role || 'user');
-        if (currentUser.role === 'admin') {
-          await loadNotes();
-        } else {
-          setLoading(false);
-        }
+        await loadNotes();
       } catch (e) {
-        console.error("Failed to fetch user or notes:", e);
+        console.error("Failed to fetch notes:", e);
         setLoading(false);
       }
     };
-    fetchUserAndNotes();
+    fetchNotes();
   }, [loadNotes]);
 
   const handleArchiveNote = async (noteId) => {
@@ -276,14 +269,6 @@ function StickyNotesContent() {
     return <div className="p-8 text-center text-white">Loading notes...</div>;
   }
 
-  if (userRole !== 'admin') {
-    return (
-      <div className="p-8 text-center text-white">
-        <h2 className="text-2xl font-bold">Access Denied</h2>
-        <p>You do not have permission to view this page.</p>
-      </div>
-    );
-  }
 
   return (
     <div className="p-6 lg:p-8">

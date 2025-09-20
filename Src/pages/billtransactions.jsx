@@ -181,7 +181,6 @@ function BillTransactionsPageContent() {
   const [transactions, setTransactions] = useState([]);
   const [bills, setBills] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [userRole, setUserRole] = useState("user");
 
   // Filtering state
   const [datePreset, setDatePreset] = useState("30");
@@ -208,15 +207,12 @@ function BillTransactionsPageContent() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Load user role
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const currentUser = await User.me();
-        setUserRole(currentUser.role || 'user');
       } catch (e) {
         console.error("Failed to fetch user", e);
-        setUserRole('user');
       }
     };
     fetchUser();
@@ -430,7 +426,7 @@ function BillTransactionsPageContent() {
   };
 
   const formatCurrency = (amount) => `$${amount.toFixed(2)}`;
-  const isAdmin = userRole === 'admin';
+  const isAdmin = true;
 
   const SortButton = ({ field, children }) => (
     <Button

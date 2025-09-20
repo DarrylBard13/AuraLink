@@ -5,8 +5,49 @@ export class User {
   constructor(data = {}) {
     this.id = data.id || null;
     this.name = data.name || '';
+    this.preferred_name = data.preferred_name || data.name || '';
+    this.full_name = data.full_name || data.name || '';
     this.email = data.email || '';
+    this.backup_email = data.backup_email || '';
+    this.role = data.role || 'admin';
     this.createdAt = data.createdAt || new Date();
+  }
+
+  static async me() {
+    // Mock current user data
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(new User({
+          id: '1',
+          name: 'Demo User',
+          preferred_name: 'Demo',
+          full_name: 'Demo User',
+          email: 'demo@auralink.app',
+          backup_email: '',
+          role: 'admin'
+        }));
+      }, 500);
+    });
+  }
+
+  static async updateMyUserData(userData) {
+    // Mock update user data
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          success: true,
+          user: new User({
+            id: '1',
+            name: userData.preferred_name || 'Demo User',
+            preferred_name: userData.preferred_name,
+            full_name: userData.preferred_name || 'Demo User',
+            email: userData.email || 'demo@auralink.app',
+            backup_email: userData.backup_email || '',
+            role: 'admin'
+          })
+        });
+      }, 1000);
+    });
   }
 }
 
@@ -82,7 +123,75 @@ export class StickyNote {
     this.content = data.content || '';
     this.color = data.color || 'yellow';
     this.userId = data.userId || null;
+    this.gridRow = data.gridRow || null;
+    this.gridCol = data.gridCol || null;
+    this.rowSpan = data.rowSpan || 10;
+    this.colSpan = data.colSpan || 10;
+    this.archived = data.archived || false;
     this.createdAt = data.createdAt || new Date();
     this.updatedAt = data.updatedAt || new Date();
+  }
+
+  static async filter(criteria = {}) {
+    // Mock filter notes
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve([
+          new StickyNote({
+            id: '1',
+            title: 'Welcome Note',
+            content: 'Welcome to AuraLink! This is your first sticky note.',
+            color: 'yellow',
+            gridRow: 1,
+            gridCol: 1,
+            archived: false
+          }),
+          new StickyNote({
+            id: '2',
+            title: 'Feature Ideas',
+            content: 'Add dark mode toggle\nImprove mobile responsiveness\nAdd export functionality',
+            color: 'blue',
+            gridRow: 1,
+            gridCol: 11,
+            archived: false
+          })
+        ].filter(note => {
+          if (criteria.archived !== undefined) {
+            return note.archived === criteria.archived;
+          }
+          return true;
+        }));
+      }, 300);
+    });
+  }
+
+  static async update(id, data) {
+    // Mock update note
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({ success: true, id, data });
+      }, 500);
+    });
+  }
+
+  static async delete(id) {
+    // Mock delete note
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({ success: true, id });
+      }, 500);
+    });
+  }
+
+  static async save(data) {
+    // Mock save note
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(new StickyNote({
+          ...data,
+          id: data.id || Date.now().toString()
+        }));
+      }, 500);
+    });
   }
 }
