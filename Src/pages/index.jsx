@@ -22,7 +22,13 @@ import BudgetsPage from "./budgets";
 
 import BudgetDetails from "./budgetdetails";
 
+import LoginPage from "./login";
+
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+
+import { AuthProvider } from '@/contexts/AuthContext';
+
+import ProtectedRoute from '@/components/auth/ProtectedRoute';
 
 const PAGES = {
 
@@ -67,44 +73,40 @@ function _getCurrentPage(url) {
 function PagesContent() {
     const location = useLocation();
     const currentPage = _getCurrentPage(location.pathname);
-    
+
     return (
-        <Layout currentPageName={currentPage}>
-            <Routes>
-
-                <Route path="/" element={<Dashboard />} />
-
-                <Route path="/bills" element={<BillsPage />} />
-
-                <Route path="/dashboard" element={<Dashboard />} />
-
-                <Route path="/subscriptions" element={<Subscriptions />} />
-
-                <Route path="/settings" element={<SettingsPage />} />
-
-                <Route path="/assistant" element={<AssistantPage />} />
-
-                <Route path="/income" element={<IncomePage />} />
-
-                <Route path="/billtransactions" element={<BillTransactionsPage />} />
-
-                <Route path="/stickynotes" element={<StickyNotesPage />} />
-
-                <Route path="/budgetbuilder" element={<BudgetBuilderPage />} />
-
-                <Route path="/budgets" element={<BudgetsPage />} />
-
-                <Route path="/budgetdetails" element={<BudgetDetails />} />
-
-            </Routes>
-        </Layout>
+        <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/*" element={
+                <ProtectedRoute>
+                    <Layout currentPageName={currentPage}>
+                        <Routes>
+                            <Route path="/" element={<Dashboard />} />
+                            <Route path="/bills" element={<BillsPage />} />
+                            <Route path="/dashboard" element={<Dashboard />} />
+                            <Route path="/subscriptions" element={<Subscriptions />} />
+                            <Route path="/settings" element={<SettingsPage />} />
+                            <Route path="/assistant" element={<AssistantPage />} />
+                            <Route path="/income" element={<IncomePage />} />
+                            <Route path="/billtransactions" element={<BillTransactionsPage />} />
+                            <Route path="/stickynotes" element={<StickyNotesPage />} />
+                            <Route path="/budgetbuilder" element={<BudgetBuilderPage />} />
+                            <Route path="/budgets" element={<BudgetsPage />} />
+                            <Route path="/budgetdetails" element={<BudgetDetails />} />
+                        </Routes>
+                    </Layout>
+                </ProtectedRoute>
+            } />
+        </Routes>
     );
 }
 
 export default function Pages() {
     return (
-        <Router>
-            <PagesContent />
-        </Router>
+        <AuthProvider>
+            <Router>
+                <PagesContent />
+            </Router>
+        </AuthProvider>
     );
 }

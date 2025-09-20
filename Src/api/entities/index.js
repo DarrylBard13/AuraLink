@@ -13,20 +13,29 @@ export class User {
     this.createdAt = data.createdAt || new Date();
   }
 
+  static getCurrentUser() {
+    try {
+      const savedUser = localStorage.getItem('auralink_user');
+      if (savedUser) {
+        return JSON.parse(savedUser);
+      }
+    } catch (error) {
+      console.error('Error getting current user:', error);
+    }
+    return null;
+  }
+
   static async me() {
-    // Mock current user data
+    // Get current authenticated user
     return new Promise((resolve) => {
       setTimeout(() => {
-        resolve(new User({
-          id: '1',
-          name: 'Demo User',
-          preferred_name: 'Demo',
-          full_name: 'Demo User',
-          email: 'demo@auralink.app',
-          backup_email: '',
-          role: 'admin'
-        }));
-      }, 500);
+        const currentUser = User.getCurrentUser();
+        if (currentUser) {
+          resolve(new User(currentUser));
+        } else {
+          resolve(null);
+        }
+      }, 100);
     });
   }
 
@@ -56,10 +65,78 @@ export class Bill {
     this.id = data.id || null;
     this.name = data.name || '';
     this.amount = data.amount || 0;
+    this.amountOriginal = data.amountOriginal || data.amount || 0;
     this.dueDate = data.dueDate || null;
     this.category = data.category || '';
-    this.userId = data.userId || null;
+    this.recurring = data.recurring || 'none';
+    this.cycle = data.cycle || null;
+    this.notes = data.notes || '';
+    this.userId = data.userId || 'current-user';
     this.isPaid = data.isPaid || false;
+    this.status = data.status || 'pending';
+    this.createdAt = data.createdAt || new Date();
+    this.updatedAt = data.updatedAt || new Date();
+  }
+
+  static async create(billData) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const currentUser = User.getCurrentUser();
+        const newBill = new Bill({
+          ...billData,
+          id: Date.now().toString(),
+          userId: currentUser?.id || 'anonymous'
+        });
+        console.log('Created bill:', newBill);
+        resolve(newBill);
+      }, 500);
+    });
+  }
+
+  static async update(id, billData) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const currentUser = User.getCurrentUser();
+        const updatedBill = new Bill({
+          ...billData,
+          id,
+          userId: currentUser?.id || 'anonymous',
+          updatedAt: new Date()
+        });
+        console.log('Updated bill:', updatedBill);
+        resolve(updatedBill);
+      }, 500);
+    });
+  }
+
+  static async delete(id) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        console.log('Deleted bill:', id);
+        resolve({ success: true, id });
+      }, 300);
+    });
+  }
+
+  static async getAll() {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const currentUser = User.getCurrentUser();
+        const bills = currentUser ? [
+          new Bill({
+            id: '1',
+            name: 'Sample Electric Bill',
+            amountOriginal: 120.50,
+            dueDate: '2024-02-15',
+            category: 'Utilities',
+            recurring: 'monthly',
+            notes: 'Electric company bill',
+            userId: currentUser.id
+          })
+        ] : [];
+        resolve(bills);
+      }, 300);
+    });
   }
 }
 
@@ -80,8 +157,72 @@ export class Subscription {
     this.amount = data.amount || 0;
     this.billingCycle = data.billingCycle || 'monthly';
     this.nextBillingDate = data.nextBillingDate || null;
-    this.userId = data.userId || null;
+    this.userId = data.userId || 'current-user';
     this.isActive = data.isActive || true;
+    this.category = data.category || 'Entertainment';
+    this.notes = data.notes || '';
+    this.createdAt = data.createdAt || new Date();
+    this.updatedAt = data.updatedAt || new Date();
+  }
+
+  static async create(subscriptionData) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const currentUser = User.getCurrentUser();
+        const newSubscription = new Subscription({
+          ...subscriptionData,
+          id: Date.now().toString(),
+          userId: currentUser?.id || 'anonymous'
+        });
+        console.log('Created subscription:', newSubscription);
+        resolve(newSubscription);
+      }, 500);
+    });
+  }
+
+  static async update(id, subscriptionData) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const currentUser = User.getCurrentUser();
+        const updatedSubscription = new Subscription({
+          ...subscriptionData,
+          id,
+          userId: currentUser?.id || 'anonymous',
+          updatedAt: new Date()
+        });
+        console.log('Updated subscription:', updatedSubscription);
+        resolve(updatedSubscription);
+      }, 500);
+    });
+  }
+
+  static async delete(id) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        console.log('Deleted subscription:', id);
+        resolve({ success: true, id });
+      }, 300);
+    });
+  }
+
+  static async getAll() {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const currentUser = User.getCurrentUser();
+        const subscriptions = currentUser ? [
+          new Subscription({
+            id: '1',
+            name: 'Netflix',
+            amount: 15.99,
+            billingCycle: 'monthly',
+            nextBillingDate: '2024-02-20',
+            category: 'Entertainment',
+            userId: currentUser.id
+          })
+        ] : [];
+        resolve(subscriptions);
+      }, 300);
+    });
   }
 }
 
@@ -102,7 +243,67 @@ export class IncomeSource {
     this.name = data.name || '';
     this.amount = data.amount || 0;
     this.frequency = data.frequency || 'monthly';
-    this.userId = data.userId || null;
+    this.userId = data.userId || 'current-user';
+    this.createdAt = data.createdAt || new Date();
+    this.updatedAt = data.updatedAt || new Date();
+  }
+
+  static async create(incomeSourceData) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const currentUser = User.getCurrentUser();
+        const newIncomeSource = new IncomeSource({
+          ...incomeSourceData,
+          id: Date.now().toString(),
+          userId: currentUser?.id || 'anonymous'
+        });
+        console.log('Created income source:', newIncomeSource);
+        resolve(newIncomeSource);
+      }, 500);
+    });
+  }
+
+  static async update(id, incomeSourceData) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const currentUser = User.getCurrentUser();
+        const updatedIncomeSource = new IncomeSource({
+          ...incomeSourceData,
+          id,
+          userId: currentUser?.id || 'anonymous',
+          updatedAt: new Date()
+        });
+        console.log('Updated income source:', updatedIncomeSource);
+        resolve(updatedIncomeSource);
+      }, 500);
+    });
+  }
+
+  static async delete(id) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        console.log('Deleted income source:', id);
+        resolve({ success: true, id });
+      }, 300);
+    });
+  }
+
+  static async getAll() {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const currentUser = User.getCurrentUser();
+        const incomeSources = currentUser ? [
+          new IncomeSource({
+            id: '1',
+            name: 'Primary Job',
+            amount: 4500.00,
+            frequency: 'monthly',
+            userId: currentUser.id
+          })
+        ] : [];
+        resolve(incomeSources);
+      }, 300);
+    });
   }
 }
 
@@ -113,6 +314,91 @@ export class LoggedIncome {
     this.amount = data.amount || 0;
     this.receivedAt = data.receivedAt || new Date();
     this.description = data.description || '';
+    this.userId = data.userId || 'current-user';
+    this.createdAt = data.createdAt || new Date();
+    this.updatedAt = data.updatedAt || new Date();
+  }
+
+  static async create(loggedIncomeData) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const currentUser = User.getCurrentUser();
+        const newLoggedIncome = new LoggedIncome({
+          ...loggedIncomeData,
+          id: Date.now().toString(),
+          userId: currentUser?.id || 'anonymous'
+        });
+        console.log('Created logged income:', newLoggedIncome);
+        resolve(newLoggedIncome);
+      }, 500);
+    });
+  }
+
+  static async update(id, loggedIncomeData) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const currentUser = User.getCurrentUser();
+        const updatedLoggedIncome = new LoggedIncome({
+          ...loggedIncomeData,
+          id,
+          userId: currentUser?.id || 'anonymous',
+          updatedAt: new Date()
+        });
+        console.log('Updated logged income:', updatedLoggedIncome);
+        resolve(updatedLoggedIncome);
+      }, 500);
+    });
+  }
+
+  static async delete(id) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        console.log('Deleted logged income:', id);
+        resolve({ success: true, id });
+      }, 300);
+    });
+  }
+
+  static async getAll() {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const currentUser = User.getCurrentUser();
+        const loggedIncomes = currentUser ? [
+          new LoggedIncome({
+            id: '1',
+            sourceId: '1',
+            amount: 4500.00,
+            receivedAt: new Date(),
+            description: 'Monthly salary',
+            userId: currentUser.id
+          })
+        ] : [];
+        resolve(loggedIncomes);
+      }, 300);
+    });
+  }
+
+  static async filter(criteria = {}) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const currentUser = User.getCurrentUser();
+        const loggedIncomes = currentUser ? [
+          new LoggedIncome({
+            id: '1',
+            sourceId: '1',
+            amount: 4500.00,
+            receivedAt: new Date(),
+            description: 'Monthly salary',
+            userId: currentUser.id
+          })
+        ] : [];
+
+        resolve(loggedIncomes.filter(income => {
+          if (criteria.entryHash && income.entryHash !== criteria.entryHash) return false;
+          return true;
+        }));
+      }, 300);
+    });
   }
 }
 
@@ -136,7 +422,8 @@ export class StickyNote {
     // Mock filter notes
     return new Promise((resolve) => {
       setTimeout(() => {
-        resolve([
+        const currentUser = User.getCurrentUser();
+        const notes = currentUser ? [
           new StickyNote({
             id: '1',
             title: 'Welcome Note',
@@ -144,7 +431,8 @@ export class StickyNote {
             color: 'yellow',
             gridRow: 1,
             gridCol: 1,
-            archived: false
+            archived: false,
+            userId: currentUser.id
           }),
           new StickyNote({
             id: '2',
@@ -153,9 +441,12 @@ export class StickyNote {
             color: 'blue',
             gridRow: 1,
             gridCol: 11,
-            archived: false
+            archived: false,
+            userId: currentUser.id
           })
-        ].filter(note => {
+        ] : [];
+
+        resolve(notes.filter(note => {
           if (criteria.archived !== undefined) {
             return note.archived === criteria.archived;
           }
@@ -169,7 +460,12 @@ export class StickyNote {
     // Mock update note
     return new Promise((resolve) => {
       setTimeout(() => {
-        resolve({ success: true, id, data });
+        const currentUser = User.getCurrentUser();
+        resolve({
+          success: true,
+          id,
+          data: { ...data, userId: currentUser?.id }
+        });
       }, 500);
     });
   }
@@ -187,9 +483,11 @@ export class StickyNote {
     // Mock save note
     return new Promise((resolve) => {
       setTimeout(() => {
+        const currentUser = User.getCurrentUser();
         resolve(new StickyNote({
           ...data,
-          id: data.id || Date.now().toString()
+          id: data.id || Date.now().toString(),
+          userId: currentUser?.id || 'anonymous'
         }));
       }, 500);
     });

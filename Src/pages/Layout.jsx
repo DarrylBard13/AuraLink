@@ -5,6 +5,7 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { User, Subscription, Bill, IncomeSource, LoggedIncome } from "@/api/entities";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   LayoutDashboard,
   CreditCard,
@@ -116,7 +117,7 @@ function SideNavigation() {
 
   const handleLogout = async () => {
     try {
-      await User.logout();
+      logout();
     } catch (error) {
       console.error("Error logging out:", error);
     }
@@ -178,6 +179,7 @@ export default function Layout({ children, currentPageName }) {
   const [userName, setUserName] = React.useState("");
   const [userRole, setUserRole] = React.useState("admin");
   const location = useLocation();
+  const { user, logout } = useAuth();
 
   // Theme
   const [theme, setTheme] = React.useState(() => {
@@ -229,18 +231,12 @@ export default function Layout({ children, currentPageName }) {
 
   // Data
   React.useEffect(() => {
-    const fetchUserAndIncomeSources = async () => {
-      try {
-        const currentUser = await User.me();
-        const displayName = currentUser.preferred_name || (currentUser.full_name?.split(" ")[0]) || "";
-        setUserName(displayName);
-        setUserRole("admin");
-      } catch (error) {
-        console.error("Error fetching user:", error);
-      }
-    };
-    fetchUserAndIncomeSources();
-  }, []);
+    if (user) {
+      const displayName = user.preferred_name || user.name || user.email?.split('@')[0] || "";
+      setUserName(displayName);
+      setUserRole("admin");
+    }
+  }, [user]);
 
   // QuickActions state
   const [showLogForm, setShowLogForm] = React.useState(false);
@@ -329,7 +325,7 @@ export default function Layout({ children, currentPageName }) {
 
   const handleLogout = async () => {
     try {
-      await User.logout();
+      logout();
     } catch (error) {
       console.error("Error logging out:", error);
     }
@@ -439,7 +435,7 @@ export default function Layout({ children, currentPageName }) {
                   <Link to={createPageUrl("settings")} className="flex-1 p-3 text-center rounded-xl transition-all duration-300 glass-light hover:glass-hover border border-white/10">
                     <Settings className="w-4 h-4 text-white mx-auto" />
                   </Link>
-                  <button onClick={async () => { await User.logout(); }} className="flex-1 p-3 text-center rounded-xl transition-all duration-300 glass-light hover:glass-hover border border-white/10">
+                  <button onClick={logout} className="flex-1 p-3 text-center rounded-xl transition-all duration-300 glass-light hover:glass-hover border border-white/10">
                     <LogOut className="w-4 h-4 text-white mx-auto" />
                   </button>
                 </div>
@@ -572,7 +568,7 @@ export default function Layout({ children, currentPageName }) {
                     <span className="text-glass font-medium text-base">Settings</span>
                   </div>
                 </Link>
-                <button onClick={async () => { await User.logout(); }} className="p-3 relative group block rounded-xl transition-all duration-300 border border-white/10 glass-light hover:glass-hover text-left w-full">
+                <button onClick={logout} className="p-3 relative group block rounded-xl transition-all duration-300 border border-white/10 glass-light hover:glass-hover text-left w-full">
                   <div className="flex items-center gap-3">
                     <div className="p-2 rounded-lg bg-gradient-to-r from-red-500 to-pink-500 shadow-lg">
                       <LogOut className="w-4 h-4 text-white" />
