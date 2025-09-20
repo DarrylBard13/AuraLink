@@ -12,6 +12,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.22.3",
+    "react-markdown": "^9.0.1",
+    "recharts": "^2.12.2",
     "framer-motion": "^11.0.24",
     "lucide-react": "^0.367.0",
     "date-fns": "^3.6.0",
