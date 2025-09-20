@@ -1,6 +1,7 @@
 // Settings.jsx
 import React, { useState, useEffect } from "react";
 import { User } from "@/api/entities";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,6 +13,7 @@ import { Loader2, User as UserIcon, Sun, Moon } from "lucide-react";
 const THEME_FALLBACK = "light";
 
 export default function SettingsPage() {
+  const { user: authUser, refreshUser } = useAuth();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -117,18 +119,28 @@ export default function SettingsPage() {
   const handleSaveProfile = async () => {
     setIsSaving(true);
     try {
-      await User.updateMyUserData({
+      const result = await User.updateMyUserData({
         preferred_name: userProfile.preferred_name?.trim() || null,
         email: userProfile.email?.trim() || null,
         backup_email: userProfile.backup_email?.trim() || null
       });
-      setUser((prev) => ({
-        ...prev,
-        preferred_name: userProfile.preferred_name?.trim() || null,
-        email: userProfile.email?.trim() || null,
-        backup_email: userProfile.backup_email?.trim() || null
-      }));
-      toast.success("Profile updated successfully");
+
+      if (result.success) {
+        // Update local user state
+        setUser((prev) => ({
+          ...prev,
+          preferred_name: userProfile.preferred_name?.trim() || null,
+          email: userProfile.email?.trim() || null,
+          backup_email: userProfile.backup_email?.trim() || null
+        }));
+
+        // Refresh the auth context to update the header
+        refreshUser();
+
+        toast.success("Profile updated successfully");
+      } else {
+        toast.error(result.error || "Failed to update profile");
+      }
     } catch (error) {
       console.error("Failed to save profile:", error);
       toast.error("Failed to update profile");

@@ -38,6 +38,19 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('auralink_user');
   };
 
+  const refreshUser = () => {
+    // Refresh user data from localStorage
+    const savedUser = localStorage.getItem('auralink_user');
+    if (savedUser) {
+      try {
+        const userData = JSON.parse(savedUser);
+        setUser(userData);
+      } catch (error) {
+        console.error('Error refreshing user data:', error);
+      }
+    }
+  };
+
   const isAuthenticated = () => {
     return user !== null;
   };
@@ -46,6 +59,7 @@ export function AuthProvider({ children }) {
     user,
     login,
     logout,
+    refreshUser,
     isAuthenticated,
     isLoading
   };

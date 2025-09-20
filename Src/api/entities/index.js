@@ -40,22 +40,39 @@ export class User {
   }
 
   static async updateMyUserData(userData) {
-    // Mock update user data
+    // Update user data and persist to localStorage
     return new Promise((resolve) => {
       setTimeout(() => {
-        resolve({
-          success: true,
-          user: new User({
-            id: '1',
-            name: userData.preferred_name || 'Demo User',
-            preferred_name: userData.preferred_name,
-            full_name: userData.preferred_name || 'Demo User',
-            email: userData.email || 'demo@auralink.app',
-            backup_email: userData.backup_email || '',
-            role: 'admin'
-          })
-        });
-      }, 1000);
+        try {
+          // Get current user from localStorage
+          const currentUser = User.getCurrentUser();
+          if (!currentUser) {
+            resolve({ success: false, error: 'No user found' });
+            return;
+          }
+
+          // Create updated user object
+          const updatedUser = {
+            ...currentUser,
+            preferred_name: userData.preferred_name || currentUser.preferred_name,
+            email: userData.email || currentUser.email,
+            backup_email: userData.backup_email || currentUser.backup_email,
+            name: userData.preferred_name || currentUser.name,
+            full_name: userData.preferred_name || currentUser.full_name
+          };
+
+          // Save updated user back to localStorage
+          localStorage.setItem('auralink_user', JSON.stringify(updatedUser));
+
+          resolve({
+            success: true,
+            user: new User(updatedUser)
+          });
+        } catch (error) {
+          console.error('Error updating user data:', error);
+          resolve({ success: false, error: error.message });
+        }
+      }, 500);
     });
   }
 }
