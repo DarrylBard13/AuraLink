@@ -1,53 +1,53 @@
 import Layout from "./Layout.jsx";
 
-import bills from "./bills";
+import BillsPage from "./bills";
 
-import dashboard from "./dashboard";
+import Dashboard from "./dashboard";
 
-import subscriptions from "./subscriptions";
+import Subscriptions from "./subscriptions";
 
-import settings from "./settings";
+import SettingsPage from "./settings";
 
-import assistant from "./assistant";
+import AssistantPage from "./assistant";
 
-import income from "./income";
+import IncomePage from "./income";
 
-import billtransactions from "./billtransactions";
+import BillTransactionsPage from "./billtransactions";
 
-import stickynotes from "./stickynotes";
+import StickyNotesPage from "./stickynotes";
 
-import budgetbuilder from "./budgetbuilder";
+import BudgetBuilderPage from "./budgetbuilder";
 
-import budgets from "./budgets";
+import BudgetsPage from "./budgets";
 
-import budgetdetails from "./budgetdetails";
+import BudgetDetails from "./budgetdetails";
 
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 
 const PAGES = {
-    
-    bills: bills,
-    
-    dashboard: dashboard,
-    
-    subscriptions: subscriptions,
-    
-    settings: settings,
-    
-    assistant: assistant,
-    
-    income: income,
-    
-    billtransactions: billtransactions,
-    
-    stickynotes: stickynotes,
-    
-    budgetbuilder: budgetbuilder,
-    
-    budgets: budgets,
-    
-    budgetdetails: budgetdetails,
-    
+
+    bills: BillsPage,
+
+    dashboard: Dashboard,
+
+    subscriptions: Subscriptions,
+
+    settings: SettingsPage,
+
+    assistant: AssistantPage,
+
+    income: IncomePage,
+
+    billtransactions: BillTransactionsPage,
+
+    stickynotes: StickyNotesPage,
+
+    budgetbuilder: BudgetBuilderPage,
+
+    budgets: BudgetsPage,
+
+    budgetdetails: BudgetDetails,
+
 }
 
 function _getCurrentPage(url) {
@@ -70,33 +70,32 @@ function PagesContent() {
     
     return (
         <Layout currentPageName={currentPage}>
-            <Routes>            
-                
-                    <Route path="/" element={<bills />} />
-                
-                
-                <Route path="/bills" element={<bills />} />
-                
-                <Route path="/dashboard" element={<dashboard />} />
-                
-                <Route path="/subscriptions" element={<subscriptions />} />
-                
-                <Route path="/settings" element={<settings />} />
-                
-                <Route path="/assistant" element={<assistant />} />
-                
-                <Route path="/income" element={<income />} />
-                
-                <Route path="/billtransactions" element={<billtransactions />} />
-                
-                <Route path="/stickynotes" element={<stickynotes />} />
-                
-                <Route path="/budgetbuilder" element={<budgetbuilder />} />
-                
-                <Route path="/budgets" element={<budgets />} />
-                
-                <Route path="/budgetdetails" element={<budgetdetails />} />
-                
+            <Routes>
+
+                <Route path="/" element={<Dashboard />} />
+
+                <Route path="/bills" element={<BillsPage />} />
+
+                <Route path="/dashboard" element={<Dashboard />} />
+
+                <Route path="/subscriptions" element={<Subscriptions />} />
+
+                <Route path="/settings" element={<SettingsPage />} />
+
+                <Route path="/assistant" element={<AssistantPage />} />
+
+                <Route path="/income" element={<IncomePage />} />
+
+                <Route path="/billtransactions" element={<BillTransactionsPage />} />
+
+                <Route path="/stickynotes" element={<StickyNotesPage />} />
+
+                <Route path="/budgetbuilder" element={<BudgetBuilderPage />} />
+
+                <Route path="/budgets" element={<BudgetsPage />} />
+
+                <Route path="/budgetdetails" element={<BudgetDetails />} />
+
             </Routes>
         </Layout>
     );
