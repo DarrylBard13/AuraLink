@@ -98,39 +98,107 @@ export class Bill {
   static async create(billData) {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const currentUser = User.getCurrentUser();
-        const newBill = new Bill({
-          ...billData,
-          id: Date.now().toString(),
-          userId: currentUser?.id || 'anonymous'
-        });
-        console.log('Created bill:', newBill);
-        resolve(newBill);
-      }, 500);
+        try {
+          const currentUser = User.getCurrentUser();
+          if (!currentUser) {
+            resolve({ success: false, error: 'No user found' });
+            return;
+          }
+
+          const newBill = new Bill({
+            ...billData,
+            id: Date.now().toString(),
+            userId: currentUser.id
+          });
+
+          // Get existing bills from localStorage
+          const existingBills = JSON.parse(localStorage.getItem('auralink_bills') || '[]');
+
+          // Add new bill
+          existingBills.push(newBill);
+
+          // Save back to localStorage
+          localStorage.setItem('auralink_bills', JSON.stringify(existingBills));
+
+          console.log('Created bill:', newBill);
+          resolve(newBill);
+        } catch (error) {
+          console.error('Error creating bill:', error);
+          resolve({ success: false, error: error.message });
+        }
+      }, 300);
     });
   }
 
   static async update(id, billData) {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const currentUser = User.getCurrentUser();
-        const updatedBill = new Bill({
-          ...billData,
-          id,
-          userId: currentUser?.id || 'anonymous',
-          updatedAt: new Date()
-        });
-        console.log('Updated bill:', updatedBill);
-        resolve(updatedBill);
-      }, 500);
+        try {
+          const currentUser = User.getCurrentUser();
+          if (!currentUser) {
+            resolve({ success: false, error: 'No user found' });
+            return;
+          }
+
+          // Get existing bills from localStorage
+          const existingBills = JSON.parse(localStorage.getItem('auralink_bills') || '[]');
+
+          // Find and update the bill
+          const billIndex = existingBills.findIndex(bill => bill.id === id && bill.userId === currentUser.id);
+
+          if (billIndex === -1) {
+            resolve({ success: false, error: 'Bill not found' });
+            return;
+          }
+
+          const updatedBill = new Bill({
+            ...existingBills[billIndex],
+            ...billData,
+            id,
+            userId: currentUser.id,
+            updatedAt: new Date()
+          });
+
+          existingBills[billIndex] = updatedBill;
+
+          // Save back to localStorage
+          localStorage.setItem('auralink_bills', JSON.stringify(existingBills));
+
+          console.log('Updated bill:', updatedBill);
+          resolve(updatedBill);
+        } catch (error) {
+          console.error('Error updating bill:', error);
+          resolve({ success: false, error: error.message });
+        }
+      }, 300);
     });
   }
 
   static async delete(id) {
     return new Promise((resolve) => {
       setTimeout(() => {
-        console.log('Deleted bill:', id);
-        resolve({ success: true, id });
+        try {
+          const currentUser = User.getCurrentUser();
+          if (!currentUser) {
+            resolve({ success: false, error: 'No user found' });
+            return;
+          }
+
+          // Get existing bills from localStorage
+          const existingBills = JSON.parse(localStorage.getItem('auralink_bills') || '[]');
+
+          // Filter out the bill to delete
+          const filteredBills = existingBills.filter(bill => !(bill.id === id && bill.userId === currentUser.id));
+
+          // Save back to localStorage
+          localStorage.setItem('auralink_bills', JSON.stringify(filteredBills));
+
+          console.log('Deleted bill:', id);
+          resolve({ success: true, id });
+        } catch (error) {
+          console.error('Error deleting bill:', error);
+          resolve({ success: false, error: error.message });
+        }
       }, 300);
     });
   }
@@ -138,21 +206,102 @@ export class Bill {
   static async getAll() {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const currentUser = User.getCurrentUser();
-        const bills = currentUser ? [
-          new Bill({
-            id: '1',
-            name: 'Sample Electric Bill',
-            amountOriginal: 120.50,
-            dueDate: '2024-02-15',
-            category: 'Utilities',
-            recurring: 'monthly',
-            notes: 'Electric company bill',
-            userId: currentUser.id
-          })
-        ] : [];
-        resolve(bills);
+        try {
+          const currentUser = User.getCurrentUser();
+          if (!currentUser) {
+            resolve([]);
+            return;
+          }
+
+          // Get bills from localStorage
+          const allBills = JSON.parse(localStorage.getItem('auralink_bills') || '[]');
+
+          // Filter bills for current user
+          const userBills = allBills
+            .filter(bill => bill.userId === currentUser.id)
+            .map(bill => new Bill(bill));
+
+          resolve(userBills);
+        } catch (error) {
+          console.error('Error getting bills:', error);
+          resolve([]);
+        }
       }, 300);
+    });
+  }
+
+  static async filter(criteria = {}) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        try {
+          const currentUser = User.getCurrentUser();
+          if (!currentUser) {
+            resolve([]);
+            return;
+          }
+
+          // Get bills from localStorage
+          const allBills = JSON.parse(localStorage.getItem('auralink_bills') || '[]');
+
+          // Filter bills for current user and criteria
+          const userBills = allBills
+            .filter(bill => {
+              if (bill.userId !== currentUser.id) return false;
+
+              // Apply additional filter criteria
+              for (const [key, value] of Object.entries(criteria)) {
+                if (key === 'cycle') {
+                  // For cycle filtering, check if bill's dueDate matches the cycle (YYYY-MM format)
+                  if (bill.dueDate) {
+                    try {
+                      const billCycle = bill.dueDate.substring(0, 7); // Extract YYYY-MM from YYYY-MM-DD
+                      if (billCycle !== value) return false;
+                    } catch (e) {
+                      return false;
+                    }
+                  } else {
+                    return false;
+                  }
+                } else if (bill[key] !== value) {
+                  return false;
+                }
+              }
+
+              return true;
+            })
+            .map(bill => new Bill(bill));
+
+          resolve(userBills);
+        } catch (error) {
+          console.error('Error filtering bills:', error);
+          resolve([]);
+        }
+      }, 300);
+    });
+  }
+
+  static async get(id) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        try {
+          const currentUser = User.getCurrentUser();
+          if (!currentUser) {
+            resolve(null);
+            return;
+          }
+
+          // Get bills from localStorage
+          const allBills = JSON.parse(localStorage.getItem('auralink_bills') || '[]');
+
+          // Find the specific bill
+          const bill = allBills.find(bill => bill.id === id && bill.userId === currentUser.id);
+
+          resolve(bill ? new Bill(bill) : null);
+        } catch (error) {
+          console.error('Error getting bill:', error);
+          resolve(null);
+        }
+      }, 200);
     });
   }
 }
@@ -160,10 +309,78 @@ export class Bill {
 export class BillTransaction {
   constructor(data = {}) {
     this.id = data.id || null;
-    this.billId = data.billId || null;
+    this.billId = data.billId || data.bill_id || null;
     this.amount = data.amount || 0;
     this.paidAt = data.paidAt || new Date();
     this.method = data.method || '';
+    this.userId = data.userId || 'current-user';
+    this.createdAt = data.createdAt || new Date();
+  }
+
+  static async create(transactionData) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        try {
+          const currentUser = User.getCurrentUser();
+          if (!currentUser) {
+            resolve({ success: false, error: 'No user found' });
+            return;
+          }
+
+          const newTransaction = new BillTransaction({
+            ...transactionData,
+            id: Date.now().toString(),
+            userId: currentUser.id
+          });
+
+          // Get existing transactions from localStorage
+          const existingTransactions = JSON.parse(localStorage.getItem('auralink_bill_transactions') || '[]');
+
+          // Add new transaction
+          existingTransactions.push(newTransaction);
+
+          // Save back to localStorage
+          localStorage.setItem('auralink_bill_transactions', JSON.stringify(existingTransactions));
+
+          console.log('Created bill transaction:', newTransaction);
+          resolve(newTransaction);
+        } catch (error) {
+          console.error('Error creating bill transaction:', error);
+          resolve({ success: false, error: error.message });
+        }
+      }, 300);
+    });
+  }
+
+  static async list() {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        try {
+          const currentUser = User.getCurrentUser();
+          if (!currentUser) {
+            resolve([]);
+            return;
+          }
+
+          // Get transactions from localStorage
+          const allTransactions = JSON.parse(localStorage.getItem('auralink_bill_transactions') || '[]');
+
+          // Filter transactions for current user
+          const userTransactions = allTransactions
+            .filter(transaction => transaction.userId === currentUser.id)
+            .map(transaction => new BillTransaction(transaction));
+
+          resolve(userTransactions);
+        } catch (error) {
+          console.error('Error getting bill transactions:', error);
+          resolve([]);
+        }
+      }, 300);
+    });
+  }
+
+  static async getAll() {
+    return BillTransaction.list();
   }
 }
 
@@ -185,39 +402,107 @@ export class Subscription {
   static async create(subscriptionData) {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const currentUser = User.getCurrentUser();
-        const newSubscription = new Subscription({
-          ...subscriptionData,
-          id: Date.now().toString(),
-          userId: currentUser?.id || 'anonymous'
-        });
-        console.log('Created subscription:', newSubscription);
-        resolve(newSubscription);
-      }, 500);
+        try {
+          const currentUser = User.getCurrentUser();
+          if (!currentUser) {
+            resolve({ success: false, error: 'No user found' });
+            return;
+          }
+
+          const newSubscription = new Subscription({
+            ...subscriptionData,
+            id: Date.now().toString(),
+            userId: currentUser.id
+          });
+
+          // Get existing subscriptions from localStorage
+          const existingSubscriptions = JSON.parse(localStorage.getItem('auralink_subscriptions') || '[]');
+
+          // Add new subscription
+          existingSubscriptions.push(newSubscription);
+
+          // Save back to localStorage
+          localStorage.setItem('auralink_subscriptions', JSON.stringify(existingSubscriptions));
+
+          console.log('Created subscription:', newSubscription);
+          resolve(newSubscription);
+        } catch (error) {
+          console.error('Error creating subscription:', error);
+          resolve({ success: false, error: error.message });
+        }
+      }, 300);
     });
   }
 
   static async update(id, subscriptionData) {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const currentUser = User.getCurrentUser();
-        const updatedSubscription = new Subscription({
-          ...subscriptionData,
-          id,
-          userId: currentUser?.id || 'anonymous',
-          updatedAt: new Date()
-        });
-        console.log('Updated subscription:', updatedSubscription);
-        resolve(updatedSubscription);
-      }, 500);
+        try {
+          const currentUser = User.getCurrentUser();
+          if (!currentUser) {
+            resolve({ success: false, error: 'No user found' });
+            return;
+          }
+
+          // Get existing subscriptions from localStorage
+          const existingSubscriptions = JSON.parse(localStorage.getItem('auralink_subscriptions') || '[]');
+
+          // Find and update the subscription
+          const subscriptionIndex = existingSubscriptions.findIndex(sub => sub.id === id && sub.userId === currentUser.id);
+
+          if (subscriptionIndex === -1) {
+            resolve({ success: false, error: 'Subscription not found' });
+            return;
+          }
+
+          const updatedSubscription = new Subscription({
+            ...existingSubscriptions[subscriptionIndex],
+            ...subscriptionData,
+            id,
+            userId: currentUser.id,
+            updatedAt: new Date()
+          });
+
+          existingSubscriptions[subscriptionIndex] = updatedSubscription;
+
+          // Save back to localStorage
+          localStorage.setItem('auralink_subscriptions', JSON.stringify(existingSubscriptions));
+
+          console.log('Updated subscription:', updatedSubscription);
+          resolve(updatedSubscription);
+        } catch (error) {
+          console.error('Error updating subscription:', error);
+          resolve({ success: false, error: error.message });
+        }
+      }, 300);
     });
   }
 
   static async delete(id) {
     return new Promise((resolve) => {
       setTimeout(() => {
-        console.log('Deleted subscription:', id);
-        resolve({ success: true, id });
+        try {
+          const currentUser = User.getCurrentUser();
+          if (!currentUser) {
+            resolve({ success: false, error: 'No user found' });
+            return;
+          }
+
+          // Get existing subscriptions from localStorage
+          const existingSubscriptions = JSON.parse(localStorage.getItem('auralink_subscriptions') || '[]');
+
+          // Filter out the subscription to delete
+          const filteredSubscriptions = existingSubscriptions.filter(sub => !(sub.id === id && sub.userId === currentUser.id));
+
+          // Save back to localStorage
+          localStorage.setItem('auralink_subscriptions', JSON.stringify(filteredSubscriptions));
+
+          console.log('Deleted subscription:', id);
+          resolve({ success: true, id });
+        } catch (error) {
+          console.error('Error deleting subscription:', error);
+          resolve({ success: false, error: error.message });
+        }
       }, 300);
     });
   }
@@ -225,19 +510,26 @@ export class Subscription {
   static async getAll() {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const currentUser = User.getCurrentUser();
-        const subscriptions = currentUser ? [
-          new Subscription({
-            id: '1',
-            name: 'Netflix',
-            amount: 15.99,
-            billingCycle: 'monthly',
-            nextBillingDate: '2024-02-20',
-            category: 'Entertainment',
-            userId: currentUser.id
-          })
-        ] : [];
-        resolve(subscriptions);
+        try {
+          const currentUser = User.getCurrentUser();
+          if (!currentUser) {
+            resolve([]);
+            return;
+          }
+
+          // Get subscriptions from localStorage
+          const allSubscriptions = JSON.parse(localStorage.getItem('auralink_subscriptions') || '[]');
+
+          // Filter subscriptions for current user
+          const userSubscriptions = allSubscriptions
+            .filter(sub => sub.userId === currentUser.id)
+            .map(sub => new Subscription(sub));
+
+          resolve(userSubscriptions);
+        } catch (error) {
+          console.error('Error getting subscriptions:', error);
+          resolve([]);
+        }
       }, 300);
     });
   }
@@ -268,39 +560,107 @@ export class IncomeSource {
   static async create(incomeSourceData) {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const currentUser = User.getCurrentUser();
-        const newIncomeSource = new IncomeSource({
-          ...incomeSourceData,
-          id: Date.now().toString(),
-          userId: currentUser?.id || 'anonymous'
-        });
-        console.log('Created income source:', newIncomeSource);
-        resolve(newIncomeSource);
-      }, 500);
+        try {
+          const currentUser = User.getCurrentUser();
+          if (!currentUser) {
+            resolve({ success: false, error: 'No user found' });
+            return;
+          }
+
+          const newIncomeSource = new IncomeSource({
+            ...incomeSourceData,
+            id: Date.now().toString(),
+            userId: currentUser.id
+          });
+
+          // Get existing income sources from localStorage
+          const existingIncomeSources = JSON.parse(localStorage.getItem('auralink_income_sources') || '[]');
+
+          // Add new income source
+          existingIncomeSources.push(newIncomeSource);
+
+          // Save back to localStorage
+          localStorage.setItem('auralink_income_sources', JSON.stringify(existingIncomeSources));
+
+          console.log('Created income source:', newIncomeSource);
+          resolve(newIncomeSource);
+        } catch (error) {
+          console.error('Error creating income source:', error);
+          resolve({ success: false, error: error.message });
+        }
+      }, 300);
     });
   }
 
   static async update(id, incomeSourceData) {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const currentUser = User.getCurrentUser();
-        const updatedIncomeSource = new IncomeSource({
-          ...incomeSourceData,
-          id,
-          userId: currentUser?.id || 'anonymous',
-          updatedAt: new Date()
-        });
-        console.log('Updated income source:', updatedIncomeSource);
-        resolve(updatedIncomeSource);
-      }, 500);
+        try {
+          const currentUser = User.getCurrentUser();
+          if (!currentUser) {
+            resolve({ success: false, error: 'No user found' });
+            return;
+          }
+
+          // Get existing income sources from localStorage
+          const existingIncomeSources = JSON.parse(localStorage.getItem('auralink_income_sources') || '[]');
+
+          // Find and update the income source
+          const incomeSourceIndex = existingIncomeSources.findIndex(source => source.id === id && source.userId === currentUser.id);
+
+          if (incomeSourceIndex === -1) {
+            resolve({ success: false, error: 'Income source not found' });
+            return;
+          }
+
+          const updatedIncomeSource = new IncomeSource({
+            ...existingIncomeSources[incomeSourceIndex],
+            ...incomeSourceData,
+            id,
+            userId: currentUser.id,
+            updatedAt: new Date()
+          });
+
+          existingIncomeSources[incomeSourceIndex] = updatedIncomeSource;
+
+          // Save back to localStorage
+          localStorage.setItem('auralink_income_sources', JSON.stringify(existingIncomeSources));
+
+          console.log('Updated income source:', updatedIncomeSource);
+          resolve(updatedIncomeSource);
+        } catch (error) {
+          console.error('Error updating income source:', error);
+          resolve({ success: false, error: error.message });
+        }
+      }, 300);
     });
   }
 
   static async delete(id) {
     return new Promise((resolve) => {
       setTimeout(() => {
-        console.log('Deleted income source:', id);
-        resolve({ success: true, id });
+        try {
+          const currentUser = User.getCurrentUser();
+          if (!currentUser) {
+            resolve({ success: false, error: 'No user found' });
+            return;
+          }
+
+          // Get existing income sources from localStorage
+          const existingIncomeSources = JSON.parse(localStorage.getItem('auralink_income_sources') || '[]');
+
+          // Filter out the income source to delete
+          const filteredIncomeSources = existingIncomeSources.filter(source => !(source.id === id && source.userId === currentUser.id));
+
+          // Save back to localStorage
+          localStorage.setItem('auralink_income_sources', JSON.stringify(filteredIncomeSources));
+
+          console.log('Deleted income source:', id);
+          resolve({ success: true, id });
+        } catch (error) {
+          console.error('Error deleting income source:', error);
+          resolve({ success: false, error: error.message });
+        }
       }, 300);
     });
   }
@@ -308,19 +668,32 @@ export class IncomeSource {
   static async getAll() {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const currentUser = User.getCurrentUser();
-        const incomeSources = currentUser ? [
-          new IncomeSource({
-            id: '1',
-            name: 'Primary Job',
-            amount: 4500.00,
-            frequency: 'monthly',
-            userId: currentUser.id
-          })
-        ] : [];
-        resolve(incomeSources);
+        try {
+          const currentUser = User.getCurrentUser();
+          if (!currentUser) {
+            resolve([]);
+            return;
+          }
+
+          // Get income sources from localStorage
+          const allIncomeSources = JSON.parse(localStorage.getItem('auralink_income_sources') || '[]');
+
+          // Filter income sources for current user
+          const userIncomeSources = allIncomeSources
+            .filter(source => source.userId === currentUser.id)
+            .map(source => new IncomeSource(source));
+
+          resolve(userIncomeSources);
+        } catch (error) {
+          console.error('Error getting income sources:', error);
+          resolve([]);
+        }
       }, 300);
     });
+  }
+
+  static async list() {
+    return IncomeSource.getAll();
   }
 }
 
@@ -339,39 +712,107 @@ export class LoggedIncome {
   static async create(loggedIncomeData) {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const currentUser = User.getCurrentUser();
-        const newLoggedIncome = new LoggedIncome({
-          ...loggedIncomeData,
-          id: Date.now().toString(),
-          userId: currentUser?.id || 'anonymous'
-        });
-        console.log('Created logged income:', newLoggedIncome);
-        resolve(newLoggedIncome);
-      }, 500);
+        try {
+          const currentUser = User.getCurrentUser();
+          if (!currentUser) {
+            resolve({ success: false, error: 'No user found' });
+            return;
+          }
+
+          const newLoggedIncome = new LoggedIncome({
+            ...loggedIncomeData,
+            id: Date.now().toString(),
+            userId: currentUser.id
+          });
+
+          // Get existing logged incomes from localStorage
+          const existingLoggedIncomes = JSON.parse(localStorage.getItem('auralink_logged_incomes') || '[]');
+
+          // Add new logged income
+          existingLoggedIncomes.push(newLoggedIncome);
+
+          // Save back to localStorage
+          localStorage.setItem('auralink_logged_incomes', JSON.stringify(existingLoggedIncomes));
+
+          console.log('Created logged income:', newLoggedIncome);
+          resolve(newLoggedIncome);
+        } catch (error) {
+          console.error('Error creating logged income:', error);
+          resolve({ success: false, error: error.message });
+        }
+      }, 300);
     });
   }
 
   static async update(id, loggedIncomeData) {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const currentUser = User.getCurrentUser();
-        const updatedLoggedIncome = new LoggedIncome({
-          ...loggedIncomeData,
-          id,
-          userId: currentUser?.id || 'anonymous',
-          updatedAt: new Date()
-        });
-        console.log('Updated logged income:', updatedLoggedIncome);
-        resolve(updatedLoggedIncome);
-      }, 500);
+        try {
+          const currentUser = User.getCurrentUser();
+          if (!currentUser) {
+            resolve({ success: false, error: 'No user found' });
+            return;
+          }
+
+          // Get existing logged incomes from localStorage
+          const existingLoggedIncomes = JSON.parse(localStorage.getItem('auralink_logged_incomes') || '[]');
+
+          // Find and update the logged income
+          const loggedIncomeIndex = existingLoggedIncomes.findIndex(income => income.id === id && income.userId === currentUser.id);
+
+          if (loggedIncomeIndex === -1) {
+            resolve({ success: false, error: 'Logged income not found' });
+            return;
+          }
+
+          const updatedLoggedIncome = new LoggedIncome({
+            ...existingLoggedIncomes[loggedIncomeIndex],
+            ...loggedIncomeData,
+            id,
+            userId: currentUser.id,
+            updatedAt: new Date()
+          });
+
+          existingLoggedIncomes[loggedIncomeIndex] = updatedLoggedIncome;
+
+          // Save back to localStorage
+          localStorage.setItem('auralink_logged_incomes', JSON.stringify(existingLoggedIncomes));
+
+          console.log('Updated logged income:', updatedLoggedIncome);
+          resolve(updatedLoggedIncome);
+        } catch (error) {
+          console.error('Error updating logged income:', error);
+          resolve({ success: false, error: error.message });
+        }
+      }, 300);
     });
   }
 
   static async delete(id) {
     return new Promise((resolve) => {
       setTimeout(() => {
-        console.log('Deleted logged income:', id);
-        resolve({ success: true, id });
+        try {
+          const currentUser = User.getCurrentUser();
+          if (!currentUser) {
+            resolve({ success: false, error: 'No user found' });
+            return;
+          }
+
+          // Get existing logged incomes from localStorage
+          const existingLoggedIncomes = JSON.parse(localStorage.getItem('auralink_logged_incomes') || '[]');
+
+          // Filter out the logged income to delete
+          const filteredLoggedIncomes = existingLoggedIncomes.filter(income => !(income.id === id && income.userId === currentUser.id));
+
+          // Save back to localStorage
+          localStorage.setItem('auralink_logged_incomes', JSON.stringify(filteredLoggedIncomes));
+
+          console.log('Deleted logged income:', id);
+          resolve({ success: true, id });
+        } catch (error) {
+          console.error('Error deleting logged income:', error);
+          resolve({ success: false, error: error.message });
+        }
       }, 300);
     });
   }
@@ -379,18 +820,26 @@ export class LoggedIncome {
   static async getAll() {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const currentUser = User.getCurrentUser();
-        const loggedIncomes = currentUser ? [
-          new LoggedIncome({
-            id: '1',
-            sourceId: '1',
-            amount: 4500.00,
-            receivedAt: new Date(),
-            description: 'Monthly salary',
-            userId: currentUser.id
-          })
-        ] : [];
-        resolve(loggedIncomes);
+        try {
+          const currentUser = User.getCurrentUser();
+          if (!currentUser) {
+            resolve([]);
+            return;
+          }
+
+          // Get logged incomes from localStorage
+          const allLoggedIncomes = JSON.parse(localStorage.getItem('auralink_logged_incomes') || '[]');
+
+          // Filter logged incomes for current user
+          const userLoggedIncomes = allLoggedIncomes
+            .filter(income => income.userId === currentUser.id)
+            .map(income => new LoggedIncome(income));
+
+          resolve(userLoggedIncomes);
+        } catch (error) {
+          console.error('Error getting logged incomes:', error);
+          resolve([]);
+        }
       }, 300);
     });
   }
@@ -398,22 +847,35 @@ export class LoggedIncome {
   static async filter(criteria = {}) {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const currentUser = User.getCurrentUser();
-        const loggedIncomes = currentUser ? [
-          new LoggedIncome({
-            id: '1',
-            sourceId: '1',
-            amount: 4500.00,
-            receivedAt: new Date(),
-            description: 'Monthly salary',
-            userId: currentUser.id
-          })
-        ] : [];
+        try {
+          const currentUser = User.getCurrentUser();
+          if (!currentUser) {
+            resolve([]);
+            return;
+          }
 
-        resolve(loggedIncomes.filter(income => {
-          if (criteria.entryHash && income.entryHash !== criteria.entryHash) return false;
-          return true;
-        }));
+          // Get logged incomes from localStorage
+          const allLoggedIncomes = JSON.parse(localStorage.getItem('auralink_logged_incomes') || '[]');
+
+          // Filter logged incomes for current user and criteria
+          const userLoggedIncomes = allLoggedIncomes
+            .filter(income => {
+              if (income.userId !== currentUser.id) return false;
+
+              // Apply additional filter criteria
+              for (const [key, value] of Object.entries(criteria)) {
+                if (income[key] !== value) return false;
+              }
+
+              return true;
+            })
+            .map(income => new LoggedIncome(income));
+
+          resolve(userLoggedIncomes);
+        } catch (error) {
+          console.error('Error filtering logged incomes:', error);
+          resolve([]);
+        }
       }, 300);
     });
   }

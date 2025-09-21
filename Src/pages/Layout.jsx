@@ -181,6 +181,13 @@ export default function Layout({ children, currentPageName }) {
   const location = useLocation();
   const { user, logout } = useAuth();
 
+  // Close mobile menus when location changes
+  useEffect(() => {
+    setMobileMenuOpen(false);
+    setHeaderExpanded(false);
+    setSidebarOpen(false);
+  }, [location.pathname]);
+
   // Theme
   const [theme, setTheme] = React.useState(() => {
     try {

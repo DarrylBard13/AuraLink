@@ -30,17 +30,22 @@ export default function LoginPage() {
         if (result.success) {
           login(result.user);
           navigate('/dashboard');
+        } else {
+          alert(result.error || 'Login failed');
         }
       } else {
         // Registration logic
         if (formData.password !== formData.confirmPassword) {
           alert('Passwords do not match');
+          setIsLoading(false);
           return;
         }
         const result = await registerUser(formData.name, formData.email, formData.password);
         if (result.success) {
           login(result.user);
           navigate('/dashboard');
+        } else {
+          alert(result.error || 'Registration failed');
         }
       }
     } catch (error) {
@@ -168,18 +173,30 @@ export default function LoginPage() {
   );
 }
 
-// Mock authentication functions
+// Authentication functions with proper validation and persistence
 async function loginUser(email, password) {
   return new Promise((resolve) => {
     setTimeout(() => {
-      // Mock login - in real app, this would call an API
-      const userData = {
-        id: 'user_' + Date.now(),
-        name: email.split('@')[0],
-        preferred_name: email.split('@')[0],
-        email: email
-      };
-      resolve({ success: true, user: userData });
+      try {
+        // Get existing users from localStorage
+        const existingUsers = JSON.parse(localStorage.getItem('auralink_users') || '[]');
+
+        // Find user with matching email and password
+        const existingUser = existingUsers.find(user =>
+          user.email === email && user.password === password
+        );
+
+        if (existingUser) {
+          // Remove password from user data before returning
+          const { password: _, ...userData } = existingUser;
+          resolve({ success: true, user: userData });
+        } else {
+          resolve({ success: false, error: 'Invalid email or password' });
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        resolve({ success: false, error: 'Login failed' });
+      }
     }, 1000);
   });
 }
@@ -187,14 +204,41 @@ async function loginUser(email, password) {
 async function registerUser(name, email, password) {
   return new Promise((resolve) => {
     setTimeout(() => {
-      // Mock registration - in real app, this would call an API
-      const userData = {
-        id: 'user_' + Date.now(),
-        name: name,
-        preferred_name: name,
-        email: email
-      };
-      resolve({ success: true, user: userData });
+      try {
+        // Get existing users from localStorage
+        const existingUsers = JSON.parse(localStorage.getItem('auralink_users') || '[]');
+
+        // Check if user with this email already exists
+        const existingUser = existingUsers.find(user => user.email === email);
+
+        if (existingUser) {
+          resolve({ success: false, error: 'User with this email already exists' });
+          return;
+        }
+
+        // Create new user
+        const newUser = {
+          id: 'user_' + Date.now(),
+          name: name,
+          preferred_name: name,
+          email: email,
+          password: password, // In production, this should be hashed
+          createdAt: new Date().toISOString()
+        };
+
+        // Add new user to the list
+        existingUsers.push(newUser);
+
+        // Save back to localStorage
+        localStorage.setItem('auralink_users', JSON.stringify(existingUsers));
+
+        // Remove password from user data before returning
+        const { password: _, ...userData } = newUser;
+        resolve({ success: true, user: userData });
+      } catch (error) {
+        console.error('Registration error:', error);
+        resolve({ success: false, error: 'Registration failed' });
+      }
     }, 1000);
   });
 }
