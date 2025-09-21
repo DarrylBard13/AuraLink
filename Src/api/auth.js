@@ -2,13 +2,55 @@
 // This will call server endpoints instead of direct database access
 
 export async function loginUser(email, password) {
-  // Use localStorage for now - database integration needs server-side API
-  return loginUserLocal(email, password);
+  try {
+    console.log('Attempting API login...');
+    const response = await fetch('/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      console.error('API login failed:', error);
+      throw new Error(error.error || 'Login failed');
+    }
+
+    const result = await response.json();
+    console.log('API login successful:', result);
+    return result;
+  } catch (error) {
+    console.error('API login error, falling back to localStorage:', error);
+    return loginUserLocal(email, password);
+  }
 }
 
 export async function registerUser(name, email, password) {
-  // Use localStorage for now - database integration needs server-side API
-  return registerUserLocal(name, email, password);
+  try {
+    console.log('Attempting API registration...');
+    const response = await fetch('/api/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name, email, password }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      console.error('API registration failed:', error);
+      throw new Error(error.error || 'Registration failed');
+    }
+
+    const result = await response.json();
+    console.log('API registration successful:', result);
+    return result;
+  } catch (error) {
+    console.error('API registration error, falling back to localStorage:', error);
+    return registerUserLocal(name, email, password);
+  }
 }
 
 // Fallback localStorage functions
