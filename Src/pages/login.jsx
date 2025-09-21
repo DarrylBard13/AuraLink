@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { User, Lock, Mail, UserPlus } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { loginUser as dbLoginUser, registerUser as dbRegisterUser } from '@/lib/database';
 
 export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -173,72 +174,23 @@ export default function LoginPage() {
   );
 }
 
-// Authentication functions with proper validation and persistence
+// Authentication functions using database
 async function loginUser(email, password) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      try {
-        // Get existing users from localStorage
-        const existingUsers = JSON.parse(localStorage.getItem('auralink_users') || '[]');
-
-        // Find user with matching email and password
-        const existingUser = existingUsers.find(user =>
-          user.email === email && user.password === password
-        );
-
-        if (existingUser) {
-          // Remove password from user data before returning
-          const { password: _, ...userData } = existingUser;
-          resolve({ success: true, user: userData });
-        } else {
-          resolve({ success: false, error: 'Invalid email or password' });
-        }
-      } catch (error) {
-        console.error('Login error:', error);
-        resolve({ success: false, error: 'Login failed' });
-      }
-    }, 1000);
-  });
+  try {
+    const result = await dbLoginUser(email, password);
+    return result;
+  } catch (error) {
+    console.error('Login error:', error);
+    return { success: false, error: 'Login failed' };
+  }
 }
 
 async function registerUser(name, email, password) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      try {
-        // Get existing users from localStorage
-        const existingUsers = JSON.parse(localStorage.getItem('auralink_users') || '[]');
-
-        // Check if user with this email already exists
-        const existingUser = existingUsers.find(user => user.email === email);
-
-        if (existingUser) {
-          resolve({ success: false, error: 'User with this email already exists' });
-          return;
-        }
-
-        // Create new user
-        const newUser = {
-          id: 'user_' + Date.now(),
-          name: name,
-          preferred_name: name,
-          email: email,
-          password: password, // In production, this should be hashed
-          createdAt: new Date().toISOString()
-        };
-
-        // Add new user to the list
-        existingUsers.push(newUser);
-
-        // Save back to localStorage
-        localStorage.setItem('auralink_users', JSON.stringify(existingUsers));
-
-        // Remove password from user data before returning
-        const { password: _, ...userData } = newUser;
-        resolve({ success: true, user: userData });
-      } catch (error) {
-        console.error('Registration error:', error);
-        resolve({ success: false, error: 'Registration failed' });
-      }
-    }, 1000);
-  });
+  try {
+    const result = await dbRegisterUser(name, email, password);
+    return result;
+  } catch (error) {
+    console.error('Registration error:', error);
+    return { success: false, error: 'Registration failed' };
+  }
 }
