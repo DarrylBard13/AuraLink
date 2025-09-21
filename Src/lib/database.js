@@ -2,7 +2,7 @@ import { sql } from '@vercel/postgres';
 
 // Configure database connection with correct environment variable
 // All Neon variables start with DATABASE_ prefix
-process.env.POSTGRES_URL = process.env.DATABASE_POSTGRES_URL;
+process.env.POSTGRES_URL = process.env.DATABASE_POSTGRES_URL || process.env.DATABASE_DATABASE_URL;
 process.env.POSTGRES_HOST = process.env.DATABASE_POSTGRES_HOST;
 process.env.POSTGRES_USER = process.env.DATABASE_POSTGRES_USER;
 process.env.POSTGRES_PASSWORD = process.env.DATABASE_POSTGRES_PASSWORD;
@@ -14,7 +14,8 @@ export async function testConnection() {
     // Debug environment variables
     console.log('Environment variables check:');
     console.log('DATABASE_POSTGRES_URL:', process.env.DATABASE_POSTGRES_URL ? 'EXISTS' : 'MISSING');
-    console.log('POSTGRES_URL:', process.env.POSTGRES_URL ? 'EXISTS' : 'MISSING');
+    console.log('DATABASE_DATABASE_URL:', process.env.DATABASE_DATABASE_URL ? 'EXISTS' : 'MISSING');
+    console.log('POSTGRES_URL (mapped):', process.env.POSTGRES_URL ? 'EXISTS' : 'MISSING');
 
     const result = await sql`SELECT 1 as test`;
     console.log('Database connection successful');
