@@ -1,50 +1,35 @@
 // API functions for authentication (client-side)
 // This will call server endpoints instead of direct database access
 
+// Import database functions directly for client-side use
+import { loginUser as dbLoginUser, registerUser as dbRegisterUser } from '../lib/database.js';
+
 export async function loginUser(email, password) {
   try {
-    // For now, simulate API call - you'll need actual API endpoints later
-    const response = await fetch('/api/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-
-    const result = await response.json();
+    console.log('Attempting database login...');
+    // Try database first
+    const result = await dbLoginUser(email, password);
+    console.log('Database login result:', result);
     return result;
   } catch (error) {
-    console.error('Login error:', error);
-    // Fallback to localStorage for now
+    console.error('Database login error:', error);
+    // Fallback to localStorage if database fails
+    console.log('Falling back to localStorage...');
     return loginUserLocal(email, password);
   }
 }
 
 export async function registerUser(name, email, password) {
   try {
-    // For now, simulate API call - you'll need actual API endpoints later
-    const response = await fetch('/api/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ name, email, password }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-
-    const result = await response.json();
+    console.log('Attempting database registration...');
+    // Try database first
+    const result = await dbRegisterUser(name, email, password);
+    console.log('Database registration result:', result);
     return result;
   } catch (error) {
-    console.error('Registration error:', error);
-    // Fallback to localStorage for now
+    console.error('Database registration error:', error);
+    // Fallback to localStorage if database fails
+    console.log('Falling back to localStorage...');
     return registerUserLocal(name, email, password);
   }
 }
