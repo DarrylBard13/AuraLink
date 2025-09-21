@@ -5,7 +5,7 @@ import React, { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { User, Subscription, Bill, IncomeSource, LoggedIncome } from "@/api/entities";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/NeonAuthContext";
 import {
   LayoutDashboard,
   CreditCard,

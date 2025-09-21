@@ -26,9 +26,9 @@ import LoginPage from "./login";
 
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 
-import { AuthProvider } from '@/contexts/AuthContext';
+import { AuthProvider } from '@/contexts/NeonAuthContext';
 
-import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import ProtectedRoute from '@/components/auth/NeonProtectedRoute';
 
 const PAGES = {
 
@@ -77,6 +77,7 @@ function PagesContent() {
     return (
         <Routes>
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/auth/*" element={<div />} />
             <Route path="/*" element={
                 <ProtectedRoute>
                     <Layout currentPageName={currentPage}>
