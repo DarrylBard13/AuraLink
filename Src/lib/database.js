@@ -1,7 +1,12 @@
 import { sql } from '@vercel/postgres';
 
 // Configure database connection with correct environment variable
+// All Neon variables start with DATABASE_ prefix
 process.env.POSTGRES_URL = process.env.DATABASE_POSTGRES_URL;
+process.env.POSTGRES_HOST = process.env.DATABASE_POSTGRES_HOST;
+process.env.POSTGRES_USER = process.env.DATABASE_POSTGRES_USER;
+process.env.POSTGRES_PASSWORD = process.env.DATABASE_POSTGRES_PASSWORD;
+process.env.POSTGRES_DATABASE = process.env.DATABASE_POSTGRES_DATABASE;
 
 // Test database connection
 export async function testConnection() {
