@@ -24,7 +24,7 @@ import BudgetDetails from "./budgetdetails";
 
 import LoginPage from "./login";
 
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 
 import { AuthProvider } from '@/contexts/NeonAuthContext';
 
@@ -105,9 +105,7 @@ function PagesContent() {
 export default function Pages() {
     return (
         <AuthProvider>
-            <Router>
-                <PagesContent />
-            </Router>
+            <PagesContent />
         </AuthProvider>
     );
 }

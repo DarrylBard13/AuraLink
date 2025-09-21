@@ -1,9 +1,10 @@
 import './App.css'
 import Pages from "@/pages/index.jsx"
 import { Toaster } from "@/components/ui/toaster"
-import { StackProvider, StackHandler } from '@stackframe/react'
-import { stackClientApp } from '@/lib/stack'
-import { useLocation } from 'react-router-dom'
+import { StackHandler, StackProvider, StackTheme } from '@stackframe/react'
+import { stackClientApp } from '@/stack/client'
+import { Suspense } from 'react'
+import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
 
 function HandlerRoutes() {
   const location = useLocation();
@@ -14,11 +15,19 @@ function HandlerRoutes() {
 
 function App() {
   return (
-    <StackProvider app={stackClientApp}>
-      <Pages />
-      <HandlerRoutes />
-      <Toaster />
-    </StackProvider>
+    <Suspense fallback={"Loading..."}>
+      <BrowserRouter>
+        <StackProvider app={stackClientApp}>
+          <StackTheme>
+            <Routes>
+              <Route path="/handler/*" element={<HandlerRoutes />} />
+              <Route path="/*" element={<Pages />} />
+            </Routes>
+            <Toaster />
+          </StackTheme>
+        </StackProvider>
+      </BrowserRouter>
+    </Suspense>
   )
 }
 
