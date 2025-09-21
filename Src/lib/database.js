@@ -1,14 +1,14 @@
-import { createPool } from '@vercel/postgres';
+import { sql } from '@vercel/postgres';
 
 // Get connection string from environment variables
 const connectionString = process.env.DATABASE_POSTGRES_URL ||
                          process.env.DATABASE_DATABASE_URL ||
                          process.env.POSTGRES_URL;
 
-// Create database connection
-const sql = createPool({
-  connectionString: connectionString
-});
+// Set the connection string for @vercel/postgres
+if (connectionString) {
+  process.env.POSTGRES_URL = connectionString;
+}
 
 // Test database connection
 export async function testConnection() {
