@@ -3,7 +3,8 @@ import { useUser } from '@stackframe/react';
 import NeonLoginPage from '@/pages/neon-login';
 
 export default function NeonProtectedRoute({ children }) {
-  const { user, isLoading } = useUser();
+  const userHook = useUser();
+  const { user, isLoading } = userHook || { user: null, isLoading: true };
 
   if (isLoading) {
     return (

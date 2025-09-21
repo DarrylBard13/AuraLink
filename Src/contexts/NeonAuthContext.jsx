@@ -12,7 +12,8 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }) {
-  const { user, isLoading } = useUser();
+  const userHook = useUser();
+  const { user, isLoading } = userHook || { user: null, isLoading: true };
 
   const login = () => {
     // Neon Auth handles login through their UI components
