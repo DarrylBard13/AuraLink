@@ -1,5 +1,17 @@
 import { sql } from '@vercel/postgres';
 
+// Test database connection
+export async function testConnection() {
+  try {
+    const result = await sql`SELECT 1 as test`;
+    console.log('Database connection successful');
+    return { success: true };
+  } catch (error) {
+    console.error('Database connection failed:', error);
+    return { success: false, error: error.message };
+  }
+}
+
 // Create users table if it doesn't exist
 export async function createUsersTable() {
   try {
@@ -24,6 +36,9 @@ export async function createUsersTable() {
 // Register a new user
 export async function registerUser(name, email, password) {
   try {
+    // Ensure table exists first
+    await createUsersTable();
+
     // Check if user already exists
     const existingUser = await sql`
       SELECT id FROM users WHERE email = ${email}
@@ -44,14 +59,17 @@ export async function registerUser(name, email, password) {
     const user = result.rows[0];
     return { success: true, user };
   } catch (error) {
-    console.error('Registration error:', error);
-    return { success: false, error: 'Registration failed' };
+    console.error('Registration error details:', error);
+    return { success: false, error: `Registration failed: ${error.message}` };
   }
 }
 
 // Login user
 export async function loginUser(email, password) {
   try {
+    // Ensure table exists first
+    await createUsersTable();
+
     const result = await sql`
       SELECT id, name, preferred_name, email, created_at
       FROM users
@@ -65,8 +83,8 @@ export async function loginUser(email, password) {
     const user = result.rows[0];
     return { success: true, user };
   } catch (error) {
-    console.error('Login error:', error);
-    return { success: false, error: 'Login failed' };
+    console.error('Login error details:', error);
+    return { success: false, error: `Login failed: ${error.message}` };
   }
 }
 
