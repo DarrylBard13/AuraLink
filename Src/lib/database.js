@@ -18,7 +18,7 @@ export async function testConnection() {
     console.log('POSTGRES_URL:', process.env.POSTGRES_URL ? 'EXISTS' : 'MISSING');
     console.log('Connection string found:', connectionString ? 'YES' : 'NO');
 
-    const result = await sql('SELECT 1 as test');
+    const result = await sql`SELECT 1 as test`;
     console.log('Database connection successful');
     return { success: true };
   } catch (error) {
@@ -30,7 +30,7 @@ export async function testConnection() {
 // Create users table if it doesn't exist
 export async function createUsersTable() {
   try {
-    await sql(`
+    await sql`
       CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
@@ -40,7 +40,7 @@ export async function createUsersTable() {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
-    `);
+    `;
     console.log('Users table created successfully');
   } catch (error) {
     console.error('Error creating users table:', error);
@@ -55,10 +55,9 @@ export async function registerUser(name, email, password) {
     await createUsersTable();
 
     // Check if user already exists
-    const existingUser = await sql(
-      'SELECT id FROM users WHERE email = $1',
-      [email]
-    );
+    const existingUser = await sql`
+      SELECT id FROM users WHERE email = ${email}
+    `;
 
     if (existingUser.length > 0) {
       return { success: false, error: 'User with this email already exists' };
@@ -66,10 +65,11 @@ export async function registerUser(name, email, password) {
 
     // In production, you should hash the password
     // For now, storing plain text (will improve later)
-    const result = await sql(
-      'INSERT INTO users (name, preferred_name, email, password_hash) VALUES ($1, $2, $3, $4) RETURNING id, name, preferred_name, email, created_at',
-      [name, name, email, password]
-    );
+    const result = await sql`
+      INSERT INTO users (name, preferred_name, email, password_hash)
+      VALUES (${name}, ${name}, ${email}, ${password})
+      RETURNING id, name, preferred_name, email, created_at
+    `;
 
     const user = result[0];
     return { success: true, user };
@@ -85,10 +85,11 @@ export async function loginUser(email, password) {
     // Ensure table exists first
     await createUsersTable();
 
-    const result = await sql(
-      'SELECT id, name, preferred_name, email, created_at FROM users WHERE email = $1 AND password_hash = $2',
-      [email, password]
-    );
+    const result = await sql`
+      SELECT id, name, preferred_name, email, created_at
+      FROM users
+      WHERE email = ${email} AND password_hash = ${password}
+    `;
 
     if (result.length === 0) {
       return { success: false, error: 'Invalid email or password' };
@@ -105,10 +106,11 @@ export async function loginUser(email, password) {
 // Get user by ID
 export async function getUserById(userId) {
   try {
-    const result = await sql(
-      'SELECT id, name, preferred_name, email, created_at FROM users WHERE id = $1',
-      [userId]
-    );
+    const result = await sql`
+      SELECT id, name, preferred_name, email, created_at
+      FROM users
+      WHERE id = ${userId}
+    `;
 
     if (result.length === 0) {
       return { success: false, error: 'User not found' };
