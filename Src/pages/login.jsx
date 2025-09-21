@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { User, Lock, Mail, UserPlus } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { loginUser as dbLoginUser, registerUser as dbRegisterUser } from '@/lib/database';
+import { loginUser as dbLoginUser, registerUser as dbRegisterUser } from '@/api/auth';
 
 export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);
