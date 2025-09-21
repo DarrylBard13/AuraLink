@@ -1,37 +1,14 @@
 // API functions for authentication (client-side)
 // This will call server endpoints instead of direct database access
 
-// Import database functions directly for client-side use
-import { loginUser as dbLoginUser, registerUser as dbRegisterUser } from '../lib/database.js';
-
 export async function loginUser(email, password) {
-  try {
-    console.log('Attempting database login...');
-    // Try database first
-    const result = await dbLoginUser(email, password);
-    console.log('Database login result:', result);
-    return result;
-  } catch (error) {
-    console.error('Database login error:', error);
-    // Fallback to localStorage if database fails
-    console.log('Falling back to localStorage...');
-    return loginUserLocal(email, password);
-  }
+  // Use localStorage for now - database integration needs server-side API
+  return loginUserLocal(email, password);
 }
 
 export async function registerUser(name, email, password) {
-  try {
-    console.log('Attempting database registration...');
-    // Try database first
-    const result = await dbRegisterUser(name, email, password);
-    console.log('Database registration result:', result);
-    return result;
-  } catch (error) {
-    console.error('Database registration error:', error);
-    // Fallback to localStorage if database fails
-    console.log('Falling back to localStorage...');
-    return registerUserLocal(name, email, password);
-  }
+  // Use localStorage for now - database integration needs server-side API
+  return registerUserLocal(name, email, password);
 }
 
 // Fallback localStorage functions
