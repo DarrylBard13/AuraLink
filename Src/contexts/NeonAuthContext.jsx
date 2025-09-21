@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useUser } from '@stackframe/react';
 
 const NeonAuthContext = createContext();
@@ -14,6 +14,22 @@ export function useAuth() {
 export function AuthProvider({ children }) {
   const userHook = useUser();
   const { user, isLoading } = userHook || { user: null, isLoading: true };
+  const [loadingTimeout, setLoadingTimeout] = useState(false);
+
+  // Add a timeout to prevent infinite loading
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (isLoading) {
+        console.warn('Stack Auth loading timeout - forcing non-loading state');
+        setLoadingTimeout(true);
+      }
+    }, 10000); // 10 second timeout
+
+    return () => clearTimeout(timer);
+  }, [isLoading]);
+
+  // Override loading state if timeout occurred
+  const actualIsLoading = isLoading && !loadingTimeout;
 
   const login = () => {
     // Neon Auth handles login through their UI components
@@ -40,7 +56,7 @@ export function AuthProvider({ children }) {
     logout,
     refreshUser,
     isAuthenticated,
-    isLoading
+    isLoading: actualIsLoading
   };
 
   return (
