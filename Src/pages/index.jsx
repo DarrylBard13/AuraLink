@@ -26,8 +26,6 @@ import LoginPage from "./login";
 
 import { Route, Routes, useLocation } from 'react-router-dom';
 
-import { AuthProvider } from '@/contexts/NeonAuthContext';
-
 import ProtectedRoute from '@/components/auth/NeonProtectedRoute';
 
 const PAGES = {
@@ -103,9 +101,5 @@ function PagesContent() {
 }
 
 export default function Pages() {
-    return (
-        <AuthProvider>
-            <PagesContent />
-        </AuthProvider>
-    );
+    return <PagesContent />;
 }

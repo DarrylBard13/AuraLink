@@ -5,7 +5,7 @@ import React, { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { User, Subscription, Bill, IncomeSource, LoggedIncome } from "@/api/entities";
-import { useAuth } from "@/contexts/NeonAuthContext";
+import { useUser } from "@stackframe/react";
 import {
   LayoutDashboard,
   CreditCard,
@@ -179,7 +179,13 @@ export default function Layout({ children, currentPageName }) {
   const [userName, setUserName] = React.useState("");
   const [userRole, setUserRole] = React.useState("admin");
   const location = useLocation();
-  const { user, logout } = useAuth();
+  const { user } = useUser() || { user: null };
+
+  const logout = async () => {
+    if (user) {
+      await user.signOut();
+    }
+  };
 
   // Close mobile menus when location changes
   useEffect(() => {

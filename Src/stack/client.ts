@@ -1,12 +1,7 @@
 import { StackClientApp } from "@stackframe/react";
-import { useNavigate } from "react-router-dom";
 
 export const stackClientApp = new StackClientApp({
-  // Environment variables for Stack Auth
-  projectId: import.meta.env.VITE_STACK_PROJECT_ID,
-  publishableClientKey: import.meta.env.VITE_STACK_PUBLISHABLE_CLIENT_KEY,
-  tokenStore: "cookie",
-  redirectMethod: {
-    useNavigate,
-  }
+  projectId: "2c8de301-b7ca-4325-a27d-09079a7063be",
+  publishableClientKey: "pck_d2v8x1mnsy9vs7t5a5rv9vfdhe8p2pkk99ha2e5pbs048",
+  tokenStore: "cookie"
 });

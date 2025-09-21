@@ -1,7 +1,7 @@
 // Settings.jsx
 import React, { useState, useEffect } from "react";
 import { User } from "@/api/entities";
-import { useAuth } from "@/contexts/NeonAuthContext";
+import { useUser } from "@stackframe/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,7 +13,7 @@ import { Loader2, User as UserIcon, Sun, Moon } from "lucide-react";
 const THEME_FALLBACK = "light";
 
 export default function SettingsPage() {
-  const { user: authUser, refreshUser } = useAuth();
+  const { user: authUser } = useUser() || { user: null };
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -134,8 +134,7 @@ export default function SettingsPage() {
           backup_email: userProfile.backup_email?.trim() || null
         }));
 
-        // Refresh the auth context to update the header
-        refreshUser();
+        // Note: Stack Auth handles user updates automatically
 
         toast.success("Profile updated successfully");
       } else {
