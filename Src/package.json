@@ -59,6 +59,9 @@
     "tailwind-merge": "^2.2.2",
     "vaul": "^0.9.0"
   },
+  "npmConfig": {
+    "legacy-peer-deps": true
+  },
   "devDependencies": {
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
