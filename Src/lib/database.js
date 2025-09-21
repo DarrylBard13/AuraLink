@@ -3,6 +3,12 @@ import { sql } from '@vercel/postgres';
 // Test database connection
 export async function testConnection() {
   try {
+    // Debug environment variables
+    console.log('Environment variables check:');
+    console.log('POSTGRES_URL:', process.env.POSTGRES_URL ? 'EXISTS' : 'MISSING');
+    console.log('DATABASE_URL:', process.env.DATABASE_URL ? 'EXISTS' : 'MISSING');
+    console.log('POSTGRES_URL_NON_POOLING:', process.env.POSTGRES_URL_NON_POOLING ? 'EXISTS' : 'MISSING');
+
     const result = await sql`SELECT 1 as test`;
     console.log('Database connection successful');
     return { success: true };
