@@ -20,6 +20,7 @@ function App() {
           <StackTheme>
             <Routes>
               <Route path="/handler/*" element={<HandlerRoutes />} />
+              <Route path="/auth/*" element={<HandlerRoutes />} />
               <Route path="/*" element={<Pages />} />
             </Routes>
             <Toaster />

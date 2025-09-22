@@ -75,7 +75,6 @@ function PagesContent() {
     return (
         <Routes>
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/auth/*" element={<div />} />
             <Route path="/*" element={
                 <ProtectedRoute>
                     <Layout currentPageName={currentPage}>
