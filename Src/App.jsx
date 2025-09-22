@@ -5,6 +5,8 @@ import { stackClientApp } from '@/stack/client'
 import { Suspense } from 'react'
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
 
+console.log('App.jsx: Starting to load app components...');
+
 function HandlerRoutes() {
   const location = useLocation();
   return (
@@ -13,6 +15,8 @@ function HandlerRoutes() {
 }
 
 function App() {
+  console.log('App.jsx: App component rendering...');
+
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
