@@ -114,13 +114,16 @@ function BudgetBuilderPageContent() {
     initConversation();
   }, []); 
 
+  // Extract conversation ID as primitive to prevent object reference changes
+  const conversationId = conversation?.id;
+
   useEffect(() => {
-    if (!conversation?.id) return;
-    
-    const unsubscribe = agentSDK.subscribeToConversation(conversation.id, (data) => {
+    if (!conversationId) return;
+
+    const unsubscribe = agentSDK.subscribeToConversation(conversationId, (data) => {
         setMessages(data.messages);
         const lastMessage = data.messages[data.messages.length - 1];
-        
+
         // New logic to determine if the agent is waiting for user input
         if (lastMessage?.role === 'assistant') {
             // Check if there are any tool calls that are still running.
@@ -136,7 +139,7 @@ function BudgetBuilderPageContent() {
     });
 
     return () => unsubscribe();
-  }, [conversation?.id]);
+  }, [conversationId]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
