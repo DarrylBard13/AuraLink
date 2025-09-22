@@ -179,3 +179,7 @@ The app auto-creates a basic users table with fields: id, name, preferred_name, 
 - Follow established patterns in existing pages for consistency
 - Implement loading states and error boundaries for robust UX
 - Use Tailwind classes for styling with design system tokens
+
+### Diff vs Full File
+When making code changes:
+- Prefer showing only the updated lines (diffs) instead of rewriting the entire file, unless I explicitly request a full file rewrite.
