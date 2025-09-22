@@ -1,36 +1,39 @@
+// Minimal test version to check if React works at all
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App.jsx'
-import ErrorBoundary from './components/ErrorBoundary.jsx'
-import './index.css'
 
-// Add error handling for the root rendering
+console.log('TEST: Starting minimal React test...');
+
+function TestApp() {
+  console.log('TEST: TestApp rendering...');
+  return (
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #0f172a, #7c3aed, #0f172a)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: 'white',
+      fontFamily: 'sans-serif'
+    }}>
+      <div style={{ textAlign: 'center' }}>
+        <h1 style={{ fontSize: '2rem', marginBottom: '1rem' }}>AuraLink Test</h1>
+        <p>React is working! ✅</p>
+        <p>Current time: {new Date().toLocaleString()}</p>
+      </div>
+    </div>
+  );
+}
+
 try {
+  console.log('TEST: Looking for root element...');
   const root = document.getElementById('root');
   if (!root) {
     throw new Error('Root element not found');
   }
-
-  ReactDOM.createRoot(root).render(
-    <ErrorBoundary>
-      <App />
-    </ErrorBoundary>
-  );
+  console.log('TEST: Root element found, creating React root...');
+  ReactDOM.createRoot(root).render(<TestApp />);
+  console.log('TEST: React app rendered successfully!');
 } catch (error) {
-  console.error('Failed to render React app:', error);
-  // Fallback rendering if React fails
-  const root = document.getElementById('root');
-  if (root) {
-    root.innerHTML = `
-      <div style="min-height: 100vh; background: linear-gradient(135deg, #0f172a, #7c3aed, #0f172a); display: flex; align-items: center; justify-content: center; color: white; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
-        <div style="text-align: center; padding: 2rem;">
-          <h1 style="font-size: 2rem; margin-bottom: 1rem;">AuraLink</h1>
-          <p style="opacity: 0.8;">Failed to load the application</p>
-          <button onclick="window.location.reload()" style="margin-top: 1rem; background: #7c3aed; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 0.5rem; cursor: pointer;">
-            Reload Page
-          </button>
-        </div>
-      </div>
-    `;
-  }
-} 
+  console.error('TEST: Failed to render:', error);
+}
