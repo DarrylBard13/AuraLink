@@ -83,6 +83,32 @@ AuraLink requires both client-side and server-side environment variables.
 ```bash
 VITE_STACK_PROJECT_ID=<stack-auth-project-id>
 VITE_STACK_PUBLISHABLE_CLIENT_KEY=<stack-auth-key>
+```
+- These are public keys used by the frontend for authentication.  
+- Accessed in React code with `import.meta.env.VITE_*`.  
+
+**Server-side (private, do not prefix with `VITE_`):**
+```bash
+DATABASE_URL=<neon-postgres-connection-string>
+```
+- This is the Neon PostgreSQL connection string.  
+- Must only be accessed in backend code (API routes, serverless functions, or `lib/database.ts`).  
+- Use `process.env.DATABASE_URL` in Node/server code.  
+
+**Example `.env.local`:**
+```bash
+# Client-side
+VITE_STACK_PROJECT_ID=your-stack-project-id
+VITE_STACK_PUBLISHABLE_CLIENT_KEY=your-stack-client-key
+
+# Server-side only
+DATABASE_URL=postgres://username:password@host:5432/dbname
+```
+
+⚠️ **Security Note:** Do not prefix secrets like `DATABASE_URL` with `VITE_`. Doing so exposes them to the client bundle and browser dev tools.  
+
+👉 **Setup Instructions:**  
+Create a `.env.local` file in the root of your project and paste in your real values (replacing the placeholders above). This file should **not** be committed to Git—ensure it is included in `.gitignore`.
 
 ## Build Configuration
 
