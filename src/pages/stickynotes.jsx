@@ -143,7 +143,7 @@ function StickyNotesContent() {
       }
     };
     fetchNotes();
-  }, [loadNotes]);
+  }, []);
 
   const handleArchiveNote = async (noteId) => {
     try {
