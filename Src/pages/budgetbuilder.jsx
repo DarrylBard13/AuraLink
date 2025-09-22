@@ -1,6 +1,20 @@
 
 import React, { useState, useEffect, useRef } from "react";
-import { agentSDK } from "@/agents";
+// Mock agentSDK for development - replace with real implementation
+const agentSDK = {
+  async createConversation(config) {
+    return { id: 'mock-conversation', messages: [], ...config };
+  },
+  async getConversation(id) {
+    return { id, messages: [] };
+  },
+  async addMessage(conversation, message) {
+    console.log('Mock: Adding message', message);
+  },
+  subscribeToConversation(id, callback) {
+    return () => {}; // unsubscribe function
+  }
+};
 import { User } from "@/api/entities";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
