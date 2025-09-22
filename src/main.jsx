@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import SimpleApp from './SimpleApp.jsx'
+import App from './App.jsx'
 import './index.css'
 
 console.log('Starting AuraLink...');
@@ -11,9 +11,9 @@ try {
     throw new Error('Root element not found');
   }
 
-  console.log('Rendering SimpleApp...');
-  ReactDOM.createRoot(root).render(<SimpleApp />);
-  console.log('SimpleApp rendered successfully!');
+  console.log('Rendering App...');
+  ReactDOM.createRoot(root).render(<App />);
+  console.log('App rendered successfully!');
 } catch (error) {
   console.error('Failed to render React app:', error);
 } 
