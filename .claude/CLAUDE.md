@@ -34,7 +34,7 @@ npm run preview
 
 ### Directory Structure
 ```
-Src/
+src/
 ├── components/           # Reusable UI components
 │   ├── ui/              # Radix UI-based design system components
 │   ├── auth/            # Authentication-related components
@@ -77,12 +77,12 @@ Src/
 
 ## Environment Variables
 
-Required environment variables (prefix with VITE_ for client-side):
-```
+AuraLink requires both client-side and server-side environment variables.  
+
+**Client-side (safe to expose in browser, must start with `VITE_`):**
+```bash
 VITE_STACK_PROJECT_ID=<stack-auth-project-id>
 VITE_STACK_PUBLISHABLE_CLIENT_KEY=<stack-auth-key>
-DATABASE_URL=<neon-postgres-connection-string>
-```
 
 ## Build Configuration
 
