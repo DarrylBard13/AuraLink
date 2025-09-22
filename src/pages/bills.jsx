@@ -126,9 +126,6 @@ function BillsPageContent() {
     }
   }, [selectedCycle]);
 
-  useEffect(() => {
-    loadBills();
-  }, [loadBills]);
 
   // Form Handlers
   const handleSubmit = async (billData) => {

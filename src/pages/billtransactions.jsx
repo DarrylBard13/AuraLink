@@ -254,11 +254,11 @@ function BillTransactionsPageContent() {
 
   useEffect(() => {
     loadBills();
-  }, [loadBills]);
+  }, []);
 
   useEffect(() => {
     loadTransactions();
-  }, [loadTransactions]);
+  }, [dateFrom, dateTo]);
 
   // Handle date preset changes
   const handleDatePresetChange = (value) => {
