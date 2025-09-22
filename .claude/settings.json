@@ -1,0 +1,6 @@
+{
+  "statusLine": {
+    "type": "command",
+    "command": "printf '%s%s@%s:%s' \"${debian_chroot:+($debian_chroot)}\" \"$(whoami)\" \"$(hostname -s)\" \"$(pwd)\""
+  }
+}
