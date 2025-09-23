@@ -1,41 +1,41 @@
-{
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "Open Terminal with Claude Monitor",
-            "type": "shell",
-            "command": "echo",
-            "args": ["Opening terminal with claude-monitor and claude code..."],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "new"
-            },
-            "runOptions": {
-                "runOn": "folderOpen"
-            }
-        },
-        {
-            "label": "Open Regular Bash Terminal",
-            "type": "shell",
-            "command": "bash",
-            "group": "build",
-            "presentation": {
-                "echo": false,
-                "reveal": "always",
-                "focus": false,
-                "panel": "new"
-            },
-            "runOptions": {
-                "runOn": "folderOpen"
-            },
-            "options": {
-                "shell": {
-                    "executable": "/bin/bash"
-                }
-            }
-        }
-    ]
-}
+// {
+//     "version": "2.0.0",
+//     "tasks": [
+//         {
+//             "label": "Open Terminal with Claude Monitor",
+//             "type": "shell",
+//             "command": "echo",
+//             "args": ["Opening terminal with claude-monitor and claude code..."],
+//             "group": "build",
+//             "presentation": {
+//                 "echo": true,
+//                 "reveal": "always",
+//                 "focus": true,
+//                 "panel": "new"
+//             },
+//             "runOptions": {
+//                 "runOn": "folderOpen"
+//             }
+//         },
+//         {
+//             "label": "Open Regular Bash Terminal",
+//             "type": "shell",
+//             "command": "bash",
+//             "group": "build",
+//             "presentation": {
+//                 "echo": false,
+//                 "reveal": "always",
+//                 "focus": false,
+//                 "panel": "new"
+//             },
+//             "runOptions": {
+//                 "runOn": "folderOpen"
+//             },
+//             "options": {
+//                 "shell": {
+//                     "executable": "/bin/bash"
+//                 }
+//             }
+//         }
+//     ]
+// }
