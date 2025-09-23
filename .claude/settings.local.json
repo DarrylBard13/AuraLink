@@ -10,7 +10,12 @@
       "Read(//usr/local/python/3.12.1/lib/python3.12/site-packages/claude_monitor/**)",
       "Bash(code:*)",
       "Bash(git add:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "mcp__ide__executeCode",
+      "WebSearch",
+      "Bash(npm install)",
+      "Bash(npm run build:*)",
+      "Bash(npm install:*)"
     ],
     "deny": [],
     "ask": []
