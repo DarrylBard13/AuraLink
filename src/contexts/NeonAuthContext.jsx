@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useUser } from '@stackframe/react';
+import { useUser } from '@/hooks/useStackAuth';
 
 const NeonAuthContext = createContext();
 

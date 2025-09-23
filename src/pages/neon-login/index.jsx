@@ -1,5 +1,5 @@
 import React from 'react';
-import { SignIn } from '@stackframe/react';
+import { SignIn } from '@/components/auth/LazyStackAuth';
 
 export default function NeonLoginPage() {
   return (

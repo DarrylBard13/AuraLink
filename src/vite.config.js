@@ -10,54 +10,77 @@ export default defineConfig({
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
-        manualChunks: {
+        manualChunks(id) {
           // React core
-          'react-vendor': ['react', 'react-dom'],
-          // UI components
-          'radix-vendor': [
-            '@radix-ui/react-accordion',
-            '@radix-ui/react-alert-dialog',
-            '@radix-ui/react-aspect-ratio',
-            '@radix-ui/react-avatar',
-            '@radix-ui/react-checkbox',
-            '@radix-ui/react-collapsible',
-            '@radix-ui/react-context-menu',
-            '@radix-ui/react-dialog',
-            '@radix-ui/react-dropdown-menu',
-            '@radix-ui/react-hover-card',
-            '@radix-ui/react-label',
-            '@radix-ui/react-menubar',
-            '@radix-ui/react-navigation-menu',
-            '@radix-ui/react-popover',
-            '@radix-ui/react-progress',
-            '@radix-ui/react-radio-group',
-            '@radix-ui/react-scroll-area',
-            '@radix-ui/react-select',
-            '@radix-ui/react-separator',
-            '@radix-ui/react-slider',
-            '@radix-ui/react-slot',
-            '@radix-ui/react-switch',
-            '@radix-ui/react-tabs',
-            '@radix-ui/react-toast',
-            '@radix-ui/react-toggle',
-            '@radix-ui/react-toggle-group',
-            '@radix-ui/react-tooltip'
-          ],
+          if (id.includes('react') && !id.includes('@stackframe')) {
+            return 'react-vendor';
+          }
+
+          // Stack Auth - dynamic chunking based on actual usage
+          if (id.includes('@stackframe/react')) {
+            if (id.includes('SignIn') || id.includes('SignUp')) {
+              return 'stack-auth-components';
+            }
+            if (id.includes('useUser')) {
+              return 'stack-hooks';
+            }
+            if (id.includes('StackProvider') || id.includes('StackTheme') || id.includes('StackClientApp')) {
+              return 'stack-providers';
+            }
+            if (id.includes('StackHandler')) {
+              return 'stack-handlers';
+            }
+            // Fallback for other Stack Auth modules
+            return 'stack-core';
+          }
+
+          // Radix UI components
+          if (id.includes('@radix-ui/')) {
+            return 'radix-vendor';
+          }
+
           // Animation and styling
-          'animation-vendor': ['framer-motion', 'class-variance-authority', 'clsx', 'tailwind-merge'],
-          // Charts and data visualization
-          'charts-vendor': ['recharts'],
+          if (id.includes('framer-motion') || id.includes('class-variance-authority') ||
+              id.includes('clsx') || id.includes('tailwind-merge')) {
+            return 'animation-vendor';
+          }
+
+          // Charts
+          if (id.includes('recharts')) {
+            return 'charts-vendor';
+          }
+
           // Date utilities
-          'date-vendor': ['date-fns', 'react-day-picker'],
-          // Forms and input
-          'forms-vendor': ['react-hook-form', 'input-otp'],
-          // Icons and media
-          'icons-vendor': ['lucide-react'],
-          // Database and auth
-          'stack-vendor': ['@stackframe/react'],
-          'db-vendor': ['@neondatabase/serverless', '@vercel/postgres'],
-          // Routing and utils
-          'utils-vendor': ['react-router-dom', 'sonner', 'cmdk', 'vaul', 'react-markdown', 'react-resizable-panels', 'embla-carousel-react']
+          if (id.includes('date-fns') || id.includes('react-day-picker')) {
+            return 'date-vendor';
+          }
+
+          // Forms
+          if (id.includes('react-hook-form') || id.includes('input-otp')) {
+            return 'forms-vendor';
+          }
+
+          // Icons
+          if (id.includes('lucide-react')) {
+            return 'icons-vendor';
+          }
+
+          // Database
+          if (id.includes('@neondatabase/serverless') || id.includes('@vercel/postgres')) {
+            return 'db-vendor';
+          }
+
+          // Utilities and routing
+          if (id.includes('react-router-dom') || id.includes('sonner') || id.includes('cmdk') ||
+              id.includes('vaul') || id.includes('react-markdown') ||
+              id.includes('react-resizable-panels') || id.includes('embla-carousel-react')) {
+            return 'utils-vendor';
+          }
+
+          // Large node_modules dependencies get their own chunks
+          if (id.includes('node_modules')) {
+            return 'vendor';
+          }
         }
       }
     }

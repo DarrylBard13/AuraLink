@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { SignIn, SignUp } from '@stackframe/react';
+import { SignIn, SignUp } from '@/components/auth/LazyStackAuth';
 
 export default function LoginPage() {
   return (

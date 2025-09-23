@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useUser } from '@stackframe/react';
+import { useUser } from '@/hooks/useStackAuth';
 import NeonLoginPage from '@/pages/neon-login';
 
 export default function NeonProtectedRoute({ children }) {

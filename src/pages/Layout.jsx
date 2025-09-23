@@ -5,7 +5,7 @@ import React, { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { User, Subscription, Bill, IncomeSource, LoggedIncome } from "@/api/entities";
-import { useUser } from "@stackframe/react";
+import { useUser } from "@/hooks/useStackAuth";
 import {
   LayoutDashboard,
   CreditCard,

@@ -1,3 +1,4 @@
+// Import only the specific class needed for tree shaking
 import { StackClientApp } from "@stackframe/react";
 
 export const stackClientApp = new StackClientApp({

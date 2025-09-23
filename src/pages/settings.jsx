@@ -1,7 +1,7 @@
 // Settings.jsx
 import React, { useState, useEffect } from "react";
 import { User } from "@/api/entities";
-import { useUser } from "@stackframe/react";
+import { useUser } from "@/hooks/useStackAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

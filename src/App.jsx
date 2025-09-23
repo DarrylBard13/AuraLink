@@ -1,6 +1,8 @@
-import Pages from "@/pages/index.jsx"
+import LazyPages from "@/pages/LazyPages.jsx"
 import { Toaster } from "@/components/ui/toaster"
-import { StackHandler, StackProvider, StackTheme } from '@stackframe/react'
+// Import only the essential providers needed for tree shaking
+import { StackProvider, StackTheme } from '@stackframe/react'
+import { StackHandler } from '@/components/auth/LazyStackAuth'
 import { stackClientApp } from '@/stack/client'
 import { Suspense } from 'react'
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
@@ -44,7 +46,7 @@ function App() {
               <Routes>
                 <Route path="/handler/*" element={<HandlerRoutes />} />
                 <Route path="/auth/*" element={<HandlerRoutes />} />
-                <Route path="/*" element={<Pages />} />
+                <Route path="/*" element={<LazyPages />} />
               </Routes>
               <Toaster />
             </StackTheme>
