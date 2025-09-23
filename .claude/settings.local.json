@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(echo $PS1)",
+      "Read(//home/codespace/**)",
+      "Read(//home/vscode/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
