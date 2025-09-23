@@ -15,7 +15,9 @@
       "WebSearch",
       "Bash(npm install)",
       "Bash(npm run build:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(git commit:*)",
+      "Bash(npm ls:*)"
     ],
     "deny": [],
     "ask": []
