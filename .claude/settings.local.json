@@ -19,7 +19,11 @@
       "Bash(git commit:*)",
       "Bash(npm ls:*)"
     ],
-    "deny": [],
+    "deny": [
+      "Bash(npx ccusage@latest:*)",
+      "Bash(npm exec ccusage@latest:*)",
+      "Bash(ccusage:*)"
+    ],
     "ask": []
   }
 }
