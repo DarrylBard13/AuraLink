@@ -7,7 +7,10 @@
       "Bash(claude-monitor)",
       "Bash(claude --version)",
       "Bash(python3:*)",
-      "Read(//usr/local/python/3.12.1/lib/python3.12/site-packages/claude_monitor/**)"
+      "Read(//usr/local/python/3.12.1/lib/python3.12/site-packages/claude_monitor/**)",
+      "Bash(code:*)",
+      "Bash(git add:*)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []

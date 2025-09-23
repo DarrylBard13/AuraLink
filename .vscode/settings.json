@@ -1,15 +1,6 @@
 {
-    // "terminal.integrated.profiles.linux": {
-    //     "ClaudeMonitor": {
-    //         "path": "/bin/bash",
-    //         "args": ["-c", "claude-monitor; claude code"]
-    //     },
-    //     "RegularBash": {
-    //         "path": "/bin/bash"
-    //     }
-    // },
-    // "terminal.integrated.defaultProfile.linux": "ClaudeMonitor",
-    // "terminal.integrated.automationProfile.linux": {
-    //     "path": "/bin/bash"
-    // }
+    "editor.stickyScroll.enabled": false,
+    "workbench.settings.enableNaturalLanguageSearch": false,
+    "terminal.integrated.stickyScroll.enabled": false,
+    "workbench.editor.enablePreview": false
 }
