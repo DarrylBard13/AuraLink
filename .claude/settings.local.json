@@ -3,7 +3,11 @@
     "allow": [
       "Bash(echo $PS1)",
       "Read(//home/codespace/**)",
-      "Read(//home/vscode/**)"
+      "Read(//home/vscode/**)",
+      "Bash(claude-monitor)",
+      "Bash(claude --version)",
+      "Bash(python3:*)",
+      "Read(//usr/local/python/3.12.1/lib/python3.12/site-packages/claude_monitor/**)"
     ],
     "deny": [],
     "ask": []
