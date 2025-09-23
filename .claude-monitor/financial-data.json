@@ -1,39 +1,39 @@
 {
-  "lastUpdated": "2025-09-23T07:36:32.349Z",
+  "lastUpdated": "2025-09-23T07:47:02.321Z",
   "version": "1.0.0",
   "source": "ccusage daily --json",
   "data": {
     "daily": [
       {
         "date": "2025-09-23",
-        "inputTokens": 4102,
-        "outputTokens": 9598,
-        "cacheCreationTokens": 484581,
-        "cacheReadTokens": 7403870,
-        "totalTokens": 7902151,
-        "totalCost": 4.194615749999998,
+        "inputTokens": 4120,
+        "outputTokens": 9605,
+        "cacheCreationTokens": 528675,
+        "cacheReadTokens": 7527038,
+        "totalTokens": 8069438,
+        "totalCost": 4.397077649999998,
         "modelsUsed": [
           "claude-sonnet-4-20250514"
         ],
         "modelBreakdowns": [
           {
             "modelName": "claude-sonnet-4-20250514",
-            "inputTokens": 4102,
-            "outputTokens": 9598,
-            "cacheCreationTokens": 484581,
-            "cacheReadTokens": 7403870,
-            "cost": 4.194615749999998
+            "inputTokens": 4120,
+            "outputTokens": 9605,
+            "cacheCreationTokens": 528675,
+            "cacheReadTokens": 7527038,
+            "cost": 4.397077649999998
           }
         ]
       }
     ],
     "totals": {
-      "inputTokens": 4102,
-      "outputTokens": 9598,
-      "cacheCreationTokens": 484581,
-      "cacheReadTokens": 7403870,
-      "totalCost": 4.194615749999998,
-      "totalTokens": 7902151
+      "inputTokens": 4120,
+      "outputTokens": 9605,
+      "cacheCreationTokens": 528675,
+      "cacheReadTokens": 7527038,
+      "totalCost": 4.397077649999998,
+      "totalTokens": 8069438
     }
   }
 }
