@@ -6,6 +6,7 @@ import { StackHandler } from '@/components/auth/LazyStackAuth'
 import { stackClientApp } from '@/stack/client'
 import { Suspense } from 'react'
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
+import { Analytics } from '@vercel/analytics/react';
 
 console.log('App.jsx: Starting to load app components...');
 console.log('Stack client app:', stackClientApp);
@@ -62,6 +63,7 @@ function App() {
           <h1 className="text-2xl mb-4">AuraLink</h1>
           <p className="text-red-400">An error occurred: {error.message}</p>
           <p className="text-white/60 text-sm mt-2">Please check the console for more details.</p>
+          <Analytics />
         </div>
       </div>
     );
