@@ -1,26 +1,26 @@
 import Layout from "./Layout.jsx";
 
-import BillsPage from "./bills";
+import BillsPage from "./bills.jsx";
 
-import Dashboard from "./dashboard";
+import Dashboard from "./dashboard.jsx";
 
-import Subscriptions from "./subscriptions";
+import Subscriptions from "./subscriptions.jsx";
 
-import SettingsPage from "./settings";
+import SettingsPage from "./settings.jsx";
 
-import AssistantPage from "./assistant";
+import AssistantPage from "./assistant.jsx";
 
-import IncomePage from "./income";
+import IncomePage from "./income.jsx";
 
-import BillTransactionsPage from "./billtransactions";
+import BillTransactionsPage from "./billtransactions.jsx";
 
-import StickyNotesPage from "./stickynotes";
+import StickyNotesPage from "./stickynotes.jsx";
 
-import BudgetBuilderPage from "./budgetbuilder";
+import BudgetBuilderPage from "./budgetbuilder.jsx";
 
-import BudgetsPage from "./budgets";
+import BudgetsPage from "./budgets.jsx";
 
-import BudgetDetails from "./budgetdetails";
+import BudgetDetails from "./budgetdetails.jsx";
 
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 
